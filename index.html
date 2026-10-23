@@ -860,7 +860,7 @@
         var deadline = Date.now() + WAIT_MS;
         while (Date.now() < deadline) {
           await sleep(POLL_MS);
-          if (await isUp(CHECK_TIMEOUT_MS)) { show('Server is up. Redirecting…', '', true); go(); return; }
+          if (await isUp(CHECK_TIMEOUT_MS)) { show('Server is up.', '', true); go(); return; }
         }
         show('Couldn’t reach the server.', 'error');
         busy = false;
