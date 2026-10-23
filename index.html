@@ -50,7 +50,7 @@
 }
 </script>
     
-    <!-- Tailwind CSS Engine -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -120,25 +120,25 @@
   <body>
     <div id="root">
       <div class="relative min-h-screen">
-        <!-- Background Grid -->
+
         <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-ink">
           <div class="grid-bg absolute inset-0 opacity-35 [mask-image:linear-gradient(to_bottom,black,transparent_82%)]"></div>
           <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,transparent_30%,rgba(10,10,10,0.94)_78%)]"></div>
           <div class="absolute inset-x-0 top-0 h-px bg-white/20"></div>
         </div>
 
-        <!-- Digital rain (see script at the bottom) -->
+
         <canvas id="matrixCanvas" aria-hidden="true"></canvas>
 
-        <!-- Custom Interactive Mouse Pointer -->
+
         <div id="custom-cursor" class="pointer-events-none fixed left-0 top-0 z-[100] hidden mix-blend-difference md:block transition-transform duration-75 ease-out">
           <div id="cursor-inner" class="-translate-x-1/2 -translate-y-1/2 rounded-full border border-white bg-white/10 transition-all duration-200" style="width: 42px; height: 42px; opacity: 1;"></div>
         </div>
 
-        <!-- Scroll Progress Bar -->
+
         <div id="progress-bar" class="fixed inset-x-0 top-0 z-[60] h-px origin-left bg-mist" style="transform: scaleX(0);"></div>
 
-        <!-- Navigation Header -->
+
         <header class="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4 sm:px-6">
           <nav class="flex w-full max-w-6xl items-center justify-between border px-4 py-3 transition-all duration-300 sm:px-5 border-white/15 bg-ink/85 shadow-[0_12px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl">
             <a href="#top" class="group flex items-center gap-3 font-mono text-xs font-semibold uppercase tracking-[0.14em]">
@@ -164,7 +164,7 @@
           </nav>
         </header>
 
-        <!-- Mobile Navigation Menu Overlay -->
+
         <div id="mobile-menu" class="fixed inset-0 z-40 hidden bg-ink/95 px-6 pt-28 backdrop-blur-xl md:hidden">
           <div class="flex flex-col gap-6 font-mono text-lg uppercase tracking-[0.14em]">
             <a href="#work" class="mobile-nav-link text-mist/70 hover:text-mist">Work</a>
@@ -176,7 +176,7 @@
         </div>
 
         <main>
-          <!-- Hero Section -->
+
           <section id="top" class="relative flex min-h-screen items-center px-6 pb-16 pt-32">
             <div class="mx-auto w-full max-w-6xl">
               <div>
@@ -237,7 +237,7 @@
             </div>
           </section>
 
-          <!-- Ticker Marquee -->
+
           <div class="relative flex overflow-hidden border-y border-white/15 py-4 [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
             <div class="animate-marquee flex shrink-0 items-center gap-8 pr-8">
               <span class="flex items-center gap-8 font-mono text-xs uppercase tracking-[0.16em] text-mist/45">TypeScript<span class="h-1 w-1 rounded-full bg-mist/45"></span></span>
@@ -255,7 +255,7 @@
               <span class="flex items-center gap-8 font-mono text-xs uppercase tracking-[0.16em] text-mist/45">Esports<span class="h-1 w-1 rounded-full bg-mist/45"></span></span>
               <span class="flex items-center gap-8 font-mono text-xs uppercase tracking-[0.16em] text-mist/45">Content Creator<span class="h-1 w-1 rounded-full bg-mist/45"></span></span>
 
-              <!-- Continuous Loop Duplicate -->
+
               <span class="flex items-center gap-8 font-mono text-xs uppercase tracking-[0.16em] text-mist/45">TypeScript<span class="h-1 w-1 rounded-full bg-mist/45"></span></span>
               <span class="flex items-center gap-8 font-mono text-xs uppercase tracking-[0.16em] text-mist/45">React<span class="h-1 w-1 rounded-full bg-mist/45"></span></span>
               <span class="flex items-center gap-8 font-mono text-xs uppercase tracking-[0.16em] text-mist/45">Next.js<span class="h-1 w-1 rounded-full bg-mist/45"></span></span>
@@ -273,7 +273,7 @@
             </div>
           </div>
 
-          <!-- Section 01 / About -->
+
           <section id="about" class="relative px-6 py-28 sm:py-36">
             <div class="mx-auto max-w-6xl">
               <div class="mb-14 border-t border-white/15 pt-5 sm:mb-16">
@@ -378,7 +378,7 @@
             </div>
           </section>
 
-          <!-- Section 02 / Work -->
+
           <section id="work" class="relative px-6 py-28 sm:py-36">
             <div class="mx-auto max-w-6xl">
               <div class="mb-14 border-t border-white/15 pt-5 sm:mb-16">
@@ -392,7 +392,7 @@
               </div>
 
               <div class="grid gap-px bg-white/15 sm:grid-cols-2">
-                <!-- Project 01 -->
+
                 <div class="sm:col-span-2">
                   <a href="#contact" data-cursor="true" class="group relative flex h-full min-h-80 flex-col border border-white/15 bg-ink p-7 transition-colors hover:bg-white/[0.035] sm:p-9">
                     <div class="flex items-start justify-between gap-6">
@@ -436,7 +436,7 @@
                   </a>
                 </div>
 
-                <!-- Project 03 -->
+
                 <div>
                   <a href="#top" data-cursor="true" class="group relative flex h-full min-h-80 flex-col border border-white/15 bg-ink p-7 transition-colors hover:bg-white/[0.035] sm:p-9">
                     <div class="flex items-start justify-between gap-6">
@@ -456,7 +456,7 @@
                   </a>
                 </div>
 
-                <!-- Project 04 -->
+
                 <div>
                   <a href="https://www.facebook.com/callmerenzu" target="_blank" rel="noreferrer" data-cursor="true" class="group relative flex h-full min-h-80 flex-col border border-white/15 bg-ink p-7 transition-colors hover:bg-white/[0.035] sm:p-9">
                     <div class="flex items-start justify-between gap-6">
@@ -476,7 +476,7 @@
                   </a>
                 </div>
 
-                <!-- Project 05 -->
+
                 <div>
                   <a href="#top" data-cursor="true" class="group relative flex h-full min-h-80 flex-col border border-white/15 bg-ink p-7 transition-colors hover:bg-white/[0.035] sm:p-9">
                     <div class="flex items-start justify-between gap-6">
@@ -497,7 +497,7 @@
                   </a>
                 </div>
 
-                <!-- Project 06 -->
+
                 <div>
                   <a href="#top" data-cursor="true" class="group relative flex h-full min-h-80 flex-col border border-white/15 bg-ink p-7 transition-colors hover:bg-white/[0.035] sm:p-9">
                     <div class="flex items-start justify-between gap-6">
@@ -520,7 +520,7 @@
             </div>
           </section>
 
-          <!-- Section 03 / Experience -->
+
           <section id="experience" class="relative px-6 py-28 sm:py-36">
             <div class="mx-auto max-w-6xl">
               <div class="mb-14 border-t border-white/15 pt-5 sm:mb-16">
@@ -610,7 +610,7 @@
             </div>
           </section>
 
-          <!-- Section 04 / Contact -->
+
           <section id="contact" class="relative px-6 py-28 sm:py-36">
             <div class="mx-auto max-w-6xl">
               <div>
@@ -649,7 +649,7 @@
           </section>
         </main>
 
-        <!-- Footer -->
+
         <footer class="border-t border-white/15 px-6 py-8">
           <div class="mx-auto flex max-w-6xl flex-col items-start justify-between gap-5 sm:flex-row sm:items-center">
             <div class="flex items-center gap-3 font-mono text-xs font-semibold uppercase tracking-[0.14em] text-mist/70">
@@ -664,10 +664,10 @@
       </div>
     </div>
 
-    <!-- UI Motion & Interactive Cursor Script -->
+
     <script>
       document.addEventListener('DOMContentLoaded', () => {
-        // 1. Interactive Custom Pointer
+
         const cursor = document.getElementById('custom-cursor');
         const cursorInner = document.getElementById('cursor-inner');
 
@@ -694,7 +694,6 @@
           });
         }
 
-        // 2. Scroll Progress Bar
         const progressBar = document.getElementById('progress-bar');
         window.addEventListener('scroll', () => {
           if (progressBar) {
@@ -704,7 +703,7 @@
           }
         });
 
-        // 3. Mobile Navigation Menu Toggle
+
         const menuBtn = document.getElementById('mobile-menu-toggle');
         const mobileMenu = document.getElementById('mobile-menu');
         if (menuBtn && mobileMenu) {
@@ -731,11 +730,11 @@
     <div id="login-status" role="status" aria-live="polite"></div>
 
     <script id="digital-rain">
-    /* Digital rain, ported from the ZED server engine (matrix mode, mirrored half-width katakana). */
+
     (function () {
       'use strict';
-      var RAIN = { enabled: true, density: 100, speed: 100, brightness: 50, trail: 100, mirror: true };  // brightness = 50%
-      var COLOR = '#ffffff';                                  // your theme accent; use '#00ff41' for classic green
+      var RAIN = { enabled: true, density: 100, speed: 100, brightness: 50, trail: 100, mirror: true }; 50%
+      var COLOR = '#ffffff';   
       var FONT_STACK = '"MS Gothic","Osaka-Mono","Noto Sans Mono CJK JP","Noto Sans JP","Yu Gothic","MS Mincho",monospace';
       var FONT_SIZE = 16, COL_W = 14, ROW_H = 17;
 
@@ -760,7 +759,7 @@
         return SYMBOLS[(Math.random() * SYMBOLS.length) | 0];
       }
 
-      /* viewport size that doesn't reset the rain when a phone's address bar slides in and out */
+
       var stableW = 0, stableH = 0;
       function getSize() {
         var w = window.innerWidth, h = window.innerHeight;
@@ -822,7 +821,7 @@
           ctx.setTransform(RAIN.mirror ? -1 : 1, 0, 0, 1, x, 0);
           ctx.shadowBlur = 0;
           ctx.fillStyle = baseStr;
-          for (var k = s.len - 1; k >= 2; k--) {                  // tail first, head last
+          for (var k = s.len - 1; k >= 2; k--) {
             var row = headRow - k;
             if (row < 0 || row > rows) continue;
             var a = 1 - k / s.len;
@@ -849,12 +848,12 @@
     </script>
 
     <script id="login-launcher">
-    /* Login button: if your PC's server is offline, ask the wake agent on your PC to start it (works from any device), wait, then continue to /login. */
+
     (function () {
       'use strict';
-      var SERVER_URL = 'https://app.lawrencebauda.com';        // <-- where your Flask server is reachable from the internet
-      var WAKE_URL = 'https://wake.lawrencebauda.com/start';  // wake agent on your PC (works from any device); '' = disable
-      var LAUNCH_URL = 'zedserver://start';                    // fallback: custom protocol from install-launcher.bat (this PC only)
+      var SERVER_URL = 'https://app.lawrencebauda.com';internet
+      var WAKE_URL = 'https://wake.lawrencebauda.com/start';
+      var LAUNCH_URL = 'zedserver://start';                    
       var CHECK_TIMEOUT_MS = 2500, WAIT_MS = 90000, POLL_MS = 2500;
 
       var box = document.getElementById('login-status');
@@ -870,7 +869,7 @@
       }
       function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
-      /* an image load only succeeds on a real 200 from your server, so a tunnel's "502 origin down" page counts as offline */
+
       function isUp(timeout) {
         return new Promise(function (resolve) {
           var img = new Image(), done = false;
@@ -887,7 +886,7 @@
         document.body.appendChild(a); a.click(); a.remove();
       }
       function launch() {
-        if (WAKE_URL) {                                        // ask the wake agent on your PC (any device)
+        if (WAKE_URL) {                                     
           try { fetch(WAKE_URL, { mode: 'no-cors', cache: 'no-store' }).catch(function () {}); } catch (e) {}
         } else {
           protocolLaunch();
@@ -903,7 +902,7 @@
         if (await isUp(CHECK_TIMEOUT_MS)) { go(); return; }
 
         show('Server is offline.', '', true);
-        launch();                                              // still inside the click's permission window
+        launch();                                        
         var deadline = Date.now() + WAIT_MS;
         while (Date.now() < deadline) {
           await sleep(POLL_MS);
