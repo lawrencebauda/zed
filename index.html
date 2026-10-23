@@ -855,15 +855,14 @@
         show('Checking server…', '', true);
         if (await isUp(CHECK_TIMEOUT_MS)) { go(); return; }
 
-        show('Server is offline. Starting it on your PC…', '', true);
+        show('Server is offline.', '', true);
         launch();                                              // still inside the click's permission window
         var deadline = Date.now() + WAIT_MS;
         while (Date.now() < deadline) {
           await sleep(POLL_MS);
           if (await isUp(CHECK_TIMEOUT_MS)) { show('Server is up. Redirecting…', '', true); go(); return; }
         }
-        show('Couldn’t reach the server. If you’re the owner: make sure your PC is on and the launcher is installed, ' +
-             'or <a href="' + LAUNCH_URL + '">try starting it again</a>.', 'error');
+        show('Couldn’t reach the server.', 'error');
         busy = false;
       }
     })();
