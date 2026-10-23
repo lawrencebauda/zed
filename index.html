@@ -4,40 +4,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZE Documentation</title>
     <meta name="description" content="Lawrence Bauda — Full-stack software engineer and founder of ZE Documentation. 13+ years shipping performant interfaces and resilient backends.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://lawrencebauda.com">
-<meta property="og:title" content="Lawrence Bauda | Software Engineer">
-<meta property="og:description" content="13+ years of engineering across React, Node.js, Python automation, and specialized transport tech logistics.">
     <link rel="canonical" href="https://lawrencebauda.com/">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-	
-	    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Lawrence Bauda",
-      "alternateName": "Renzu",
-      "url": "https://lawrencebauda.com",
-      "homeLocation": {
-        "@type": "Place",
-        "name": "Manila, Philippines"
-      },
-      "jobTitle": "Full-stack Engineer & Entrepreneur",
-      "knowsAbout": ["React", "Next.js", "TypeScript", "Node.js", "Python", "Lua", "MTA:SA", "Automated Workflows"],
-      "founder": {
-        "@type": "Organization",
-        "name": "ZE Documentation"
-      },
-      "sameAs": [
-        "https://facebook.com",
-        "https://instagram.com"
-      ]
-    }
-    </script>
     
     <!-- Tailwind CSS Engine -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -838,11 +810,12 @@
     </script>
 
     <script id="login-launcher">
-    /* Login button: if your PC's server is offline, ask the PC launcher to start it, wait, then continue to /login. */
+    /* Login button: if your PC's server is offline, ask the wake agent on your PC to start it (works from any device), wait, then continue to /login. */
     (function () {
       'use strict';
       var SERVER_URL = 'https://app.lawrencebauda.com';        // <-- where your Flask server is reachable from the internet
-      var LAUNCH_URL = 'zedserver://start';                    // custom protocol registered by install-launcher.bat
+      var WAKE_URL = 'https://wake.lawrencebauda.com/start';  // wake agent on your PC (works from any device); '' = disable
+      var LAUNCH_URL = 'zedserver://start';                    // fallback: custom protocol from install-launcher.bat (this PC only)
       var CHECK_TIMEOUT_MS = 2500, WAIT_MS = 90000, POLL_MS = 2500;
 
       var box = document.getElementById('login-status');
@@ -869,10 +842,17 @@
           img.src = SERVER_URL + '/static/favicon.ico?_=' + Date.now();
         });
       }
-      function launch() {
+      function protocolLaunch() {
         var a = document.createElement('a');
         a.href = LAUNCH_URL; a.style.display = 'none';
         document.body.appendChild(a); a.click(); a.remove();
+      }
+      function launch() {
+        if (WAKE_URL) {                                        // ask the wake agent on your PC (any device)
+          try { fetch(WAKE_URL, { mode: 'no-cors', cache: 'no-store' }).catch(function () {}); } catch (e) {}
+        } else {
+          protocolLaunch();
+        }
       }
       function go() { window.location.href = SERVER_URL + '/login'; }
 
@@ -883,14 +863,15 @@
         show('Checking server…', '', true);
         if (await isUp(CHECK_TIMEOUT_MS)) { go(); return; }
 
-        show('Server is offline.', '', true);
+        show('Server is offline. Starting it on your PC…', '', true);
         launch();                                              // still inside the click's permission window
         var deadline = Date.now() + WAIT_MS;
         while (Date.now() < deadline) {
           await sleep(POLL_MS);
-          if (await isUp(CHECK_TIMEOUT_MS)) { show('Server is up.', '', true); go(); return; }
+          if (await isUp(CHECK_TIMEOUT_MS)) { show('Server is up. Redirecting…', '', true); go(); return; }
         }
-        show('Couldn’t reach the server.', 'error');
+        show('Couldn’t reach the server. If you’re the owner: make sure your PC is on and the wake agent is running' +
+             (WAKE_URL ? '' : ', or <a href="' + LAUNCH_URL + '">try starting it again</a>') + '.', 'error');
         busy = false;
       }
     })();
