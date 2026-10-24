@@ -1,11 +1,12 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZE Documentation</title>
     <meta name="description" content="Lawrence Bauda — Full-stack software engineer and founder of ZE Documentation. 13+ years shipping performant interfaces and resilient backends.">
     <link rel="canonical" href="https://lawrencebauda.com/">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,7 +51,7 @@
 }
 </script>
     
-    <!-- Tailwind CSS Engine -->
+    <!-- Tailwind CSS Engine (Fixed: No trailing slash redirect) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -74,6 +75,20 @@
     </script>
 
     <style>
+      :root {
+        --color-ink: #0a0a0a;
+        --color-ink-soft: #111111;
+        --color-mist: #f4f4f0;
+      }
+      /* Fallback utility classes for search crawlers */
+      .bg-ink { background-color: var(--color-ink); }
+      .bg-ink-soft { background-color: var(--color-ink-soft); }
+      .bg-mist { background-color: var(--color-mist); }
+      .text-mist { color: var(--color-mist); }
+      .border-mist { border-color: var(--color-mist); }
+      .font-sans { font-family: 'Inter', sans-serif; }
+      .font-mono { font-family: 'JetBrains Mono', monospace; }
+
       * { box-sizing: border-box; }
       html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
       body {
@@ -95,10 +110,10 @@
 
       #matrixCanvas {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        height: 100lvh;              /* stable on phones when the address bar hides */
-        z-index: -5;                 /* above the dark grid background (-10), below all content */
+        height: 100lvh;
+        z-index: -5;
         pointer-events: none;
-        opacity: 0.5;                /* digital rain brightness: 50% */
+        opacity: 0.5;
       }
       #login-status {
         position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 16px);
@@ -127,7 +142,7 @@
           <div class="absolute inset-x-0 top-0 h-px bg-white/20"></div>
         </div>
 
-        <!-- Digital rain (see script at the bottom) -->
+        <!-- Digital rain -->
         <canvas id="matrixCanvas" aria-hidden="true"></canvas>
 
         <!-- Custom Interactive Mouse Pointer -->
@@ -667,7 +682,6 @@
     <!-- UI Motion & Interactive Cursor Script -->
     <script>
       document.addEventListener('DOMContentLoaded', () => {
-        // 1. Interactive Custom Pointer
         const cursor = document.getElementById('custom-cursor');
         const cursorInner = document.getElementById('cursor-inner');
 
@@ -694,7 +708,6 @@
           });
         }
 
-        // 2. Scroll Progress Bar
         const progressBar = document.getElementById('progress-bar');
         window.addEventListener('scroll', () => {
           if (progressBar) {
@@ -704,7 +717,6 @@
           }
         });
 
-        // 3. Mobile Navigation Menu Toggle
         const menuBtn = document.getElementById('mobile-menu-toggle');
         const mobileMenu = document.getElementById('mobile-menu');
         if (menuBtn && mobileMenu) {
@@ -731,11 +743,10 @@
     <div id="login-status" role="status" aria-live="polite"></div>
 
     <script id="digital-rain">
-    /* Digital rain, ported from the ZED server engine (matrix mode, mirrored half-width katakana). */
     (function () {
       'use strict';
-      var RAIN = { enabled: true, density: 100, speed: 100, brightness: 50, trail: 100, mirror: true };  // brightness = 50%
-      var COLOR = '#ffffff';                                  // your theme accent; use '#00ff41' for classic green
+      var RAIN = { enabled: true, density: 100, speed: 100, brightness: 50, trail: 100, mirror: true };
+      var COLOR = '#ffffff';
       var FONT_STACK = '"MS Gothic","Osaka-Mono","Noto Sans Mono CJK JP","Noto Sans JP","Yu Gothic","MS Mincho",monospace';
       var FONT_SIZE = 16, COL_W = 14, ROW_H = 17;
 
@@ -760,7 +771,6 @@
         return SYMBOLS[(Math.random() * SYMBOLS.length) | 0];
       }
 
-      /* viewport size that doesn't reset the rain when a phone's address bar slides in and out */
       var stableW = 0, stableH = 0;
       function getSize() {
         var w = window.innerWidth, h = window.innerHeight;
@@ -797,7 +807,7 @@
 
       function frame(t) {
         window.requestAnimationFrame(frame);
-        if (document.hidden || t - last < 32) return;           // about 30 frames per second
+        if (document.hidden || t - last < 32) return;
         var dt = Math.min((t - last) / 1000, 0.1);
         last = t;
         var size = getSize();
@@ -822,7 +832,7 @@
           ctx.setTransform(RAIN.mirror ? -1 : 1, 0, 0, 1, x, 0);
           ctx.shadowBlur = 0;
           ctx.fillStyle = baseStr;
-          for (var k = s.len - 1; k >= 2; k--) {                  // tail first, head last
+          for (var k = s.len - 1; k >= 2; k--) {
             var row = headRow - k;
             if (row < 0 || row > rows) continue;
             var a = 1 - k / s.len;
@@ -849,12 +859,11 @@
     </script>
 
     <script id="login-launcher">
-    /* Login button: if your PC's server is offline, ask the wake agent on your PC to start it (works from any device), wait, then continue to /login. */
     (function () {
       'use strict';
-      var SERVER_URL = 'https://app.lawrencebauda.com';        // <-- where your Flask server is reachable from the internet
-      var WAKE_URL = 'https://wake.lawrencebauda.com/start';  // wake agent on your PC (works from any device); '' = disable
-      var LAUNCH_URL = 'zedserver://start';                    // fallback: custom protocol from install-launcher.bat (this PC only)
+      var SERVER_URL = 'https://app.lawrencebauda.com';
+      var WAKE_URL = 'https://wake.lawrencebauda.com/start';
+      var LAUNCH_URL = 'zedserver://start';
       var CHECK_TIMEOUT_MS = 2500, WAIT_MS = 90000, POLL_MS = 2500;
 
       var box = document.getElementById('login-status');
@@ -870,7 +879,6 @@
       }
       function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
-      /* an image load only succeeds on a real 200 from your server, so a tunnel's "502 origin down" page counts as offline */
       function isUp(timeout) {
         return new Promise(function (resolve) {
           var img = new Image(), done = false;
@@ -887,7 +895,7 @@
         document.body.appendChild(a); a.click(); a.remove();
       }
       function launch() {
-        if (WAKE_URL) {                                        // ask the wake agent on your PC (any device)
+        if (WAKE_URL) {
           try { fetch(WAKE_URL, { mode: 'no-cors', cache: 'no-store' }).catch(function () {}); } catch (e) {}
         } else {
           protocolLaunch();
@@ -903,7 +911,7 @@
         if (await isUp(CHECK_TIMEOUT_MS)) { go(); return; }
 
         show('Server is offline.', '', true);
-        launch();                                              // still inside the click's permission window
+        launch();
         var deadline = Date.now() + WAIT_MS;
         while (Date.now() < deadline) {
           await sleep(POLL_MS);
