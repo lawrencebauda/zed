@@ -28,8 +28,14 @@ jobs:
         with:
           node-version: 20
 
+      - name: Install Tailwind
+        run: npm install --no-save tailwindcss @tailwindcss/cli
+
       - name: Compile Tailwind CSS
         run: npx @tailwindcss/cli -i ./input.css -o ./style.css --minify
+
+      - name: Remove build files
+        run: rm -rf node_modules package.json package-lock.json
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
