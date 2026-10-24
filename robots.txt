@@ -1,7 +1,8 @@
+# Allow access to all general web search engines
 User-agent: *
 Allow: /
 
-# Explicitly welcome major AI crawlers
+# AI Crawlers & Model Training
 User-agent: GPTBot
 Allow: /
 
@@ -14,4 +15,15 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
+# AI Search & Retrieval Bots (for live answer citations)
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Sitemap
 Sitemap: https://lawrencebauda.com/sitemap.xml
