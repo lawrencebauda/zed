@@ -137,10 +137,10 @@
         pointer-events: none;
         opacity: 0.55;
       }
-      /* Hide the native arrow only when the custom cursor is running */
-      @media (hover: hover) and (pointer: fine) and (min-width: 768px) {
-        html.has-custom-cursor, html.has-custom-cursor * { cursor: none !important; }
-      }
+      /* Deterrents against printing / print-to-PDF */
+      @media print { html, body { display: none !important; } }
+      #shot-shield { position: fixed; inset: 0; z-index: 9999; background: #0a0a0a; display: none; }
+      #shot-shield.on { display: block; }
       #login-status {
         position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 16px);
         z-index: 120; max-width: min(92vw, 460px); padding: 12px 16px;
@@ -167,6 +167,7 @@
     </style>
 </head>
   <body>
+    <div id="shot-shield" aria-hidden="true"></div>
     <div id="root">
       <div class="relative flex min-h-screen flex-col justify-between">
         
@@ -347,10 +348,52 @@
           }
         });
 
-        document.addEventListener('dragstart', (e) => e.preventDefault());
+  
+      // Screenshot deterrents (browsers cannot truly block screenshots)
+      (function () {
+        const shield = document.getElementById('shot-shield');
+        const flash = () => {
+          shield.classList.add('on');
+          setTimeout(() => shield.classList.remove('on'), 1500);
+        };
+        document.addEventListener('keyup', (e) => {
+          if (e.key === 'PrintScreen') {
+            flash();
+            try { navigator.clipboard.writeText(''); } catch (_) {}
+          }
+        });
+        document.addEventListener('keydown', (e) => {
+          const k = (e.key || '').toLowerCase();
+          const ctrl = e.ctrlKey || e.metaKey;
+          if (e.key === 'PrintScreen' || (ctrl && k === 'p') || (e.metaKey && e.shiftKey && ['3', '4', '5'].includes(k)) || (e.metaKey && e.shiftKey && k === 's') || (e.getModifierState && e.getModifierState('Meta') && e.shiftKey && k === 's')) {
+            e.preventDefault();
+            flash();
+          }
+        }, true);
+        window.addEventListener('beforeprint', flash);
+      })();
+      document.addEventListener('dragstart', (e) => e.preventDefault());
       })();
     </script>
 
+    <script>
+      // Block right-click menu and common DevTools / view-source shortcuts
+      document.addEventListener('contextmenu', (e) => e.preventDefault());
+      document.addEventListener('keydown', (e) => {
+        const k = (e.key || '').toLowerCase();
+        const ctrl = e.ctrlKey || e.metaKey;
+        if (
+          e.key === 'F12' ||
+          (ctrl && e.shiftKey && ['i', 'j', 'c', 'k'].includes(k)) ||
+          (e.metaKey && e.altKey && ['i', 'j', 'c', 'u'].includes(k)) ||
+          (ctrl && ['u', 's'].includes(k))
+        ) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }, true);
+      document.addEventListener('dragstart', (e) => { if (e.target.tagName === 'IMG') e.preventDefault(); });
+    </script>
     <!-- UI Motion, Hardware Precision Cursor, Full Source Resolution Controller -->
     <script>
       document.addEventListener('DOMContentLoaded', () => {
@@ -359,8 +402,6 @@
         const cursorInner = document.getElementById('cursor-inner');
 
         if (cursor && window.innerWidth >= 768) {
-          document.documentElement.classList.add('has-custom-cursor');
-
           window.addEventListener('mousemove', (e) => {
             cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
             cursor.style.opacity = '1';
