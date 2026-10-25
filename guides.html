@@ -167,9 +167,9 @@
         <!-- Digital Rain Canvas (Layer 5) -->
         <canvas id="matrixCanvas" aria-hidden="true"></canvas>
 
-        <!-- Calibrated Mouse Pointer -->
+        <!-- Hardware-Calibrated Precision Mouse Pointer -->
         <div id="custom-cursor" class="pointer-events-none fixed left-0 top-0 z-[100] hidden mix-blend-difference md:block">
-          <div id="cursor-inner" class="-translate-x-1/2 -translate-y-1/2 rounded-full border border-white bg-white/10 transition-all duration-150 ease-out" style="width: 42px; height: 42px; opacity: 1;"></div>
+          <div id="cursor-inner" class="-translate-x-1/2 -translate-y-1/2 rounded-full border border-white bg-white/10 transition-[width,height,background-color] duration-150 ease-out" style="width: 42px; height: 42px; opacity: 1;"></div>
         </div>
 
         <!-- Scroll Progress Bar -->
@@ -238,8 +238,8 @@
                     <!-- Files load ON DEMAND when selected (no preloading on page load)                                -->
                     <!-- Set data-type="video" for MP4 links or data-type="image" for PNG/JPG/WEBP image links          -->
                     <!-- ============================================================================================== -->
-                    <option data-type="video" value="https://raw.githubusercontent.com/username/repository/main/video.mp4">Video 01 — Main Stream</option>
-                    <option data-type="video" value="https://raw.githubusercontent.com/username/repository/main/video2.mp4">Video 02 — Feature Demo</option>
+                    <option data-type="video" value="https://raw.githubusercontent.com/lawrencebauda/zed/main/(ZED)RAW/INDRIVE_VIDEO.mp4">INDRIVE - Tutorial</option>
+                    <option data-type="video" value="https://raw.githubusercontent.com/lawrencebauda/zed/main/(ZED)RAW/INDRIVE.jpg">INDRIVE - Instructions</option>
                     <option data-type="image" value="https://raw.githubusercontent.com/username/repository/main/preview.png">Image 01 — System Preview</option>
                     <option data-type="image" value="https://raw.githubusercontent.com/username/repository/main/diagram.png">Image 02 — Architecture Diagram</option>
                   </select>
@@ -341,17 +341,26 @@
       })();
     </script>
 
-    <!-- UI Motion, Interactive Pointer, On-Demand Loader & Zoom/Pan Controller -->
+    <!-- UI Motion, Hardware Precision Cursor, On-Demand Loader & Zoom/Pan Controller -->
     <script>
       document.addEventListener('DOMContentLoaded', () => {
-        // 1. Calibrated Custom Pointer
+        // 1. Hardware Precision Calibrated Pointer (RAF Sync, 0-Lag, No CSS Transform Interpolation)
         const cursor = document.getElementById('custom-cursor');
         const cursorInner = document.getElementById('cursor-inner');
 
         if (cursor && window.innerWidth >= 768) {
+          let mouseX = -100, mouseY = -100;
+
           window.addEventListener('mousemove', (e) => {
-            cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+            mouseX = e.clientX;
+            mouseY = e.clientY;
           });
+
+          function renderCursor() {
+            cursor.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+            requestAnimationFrame(renderCursor);
+          }
+          requestAnimationFrame(renderCursor);
 
           document.querySelectorAll('a, button, video, select, #imageWrapper, [data-cursor="true"]').forEach((el) => {
             el.addEventListener('mouseenter', () => {
@@ -407,7 +416,7 @@
         if (imageWrapper && mainImage) {
           // A. Click to toggle zoom
           imageWrapper.addEventListener('click', (e) => {
-            if (hasDragged) return; // Ignore clicks if user was panning/dragging
+            if (hasDragged) return;
 
             if (scale > 1) {
               resetZoom();
@@ -516,26 +525,21 @@
             const mediaUrl = selectedOpt.value;
             const explicitType = selectedOpt.getAttribute('data-type');
             
-            // Auto-detect media type if data-type attribute is omitted
             const isImage = explicitType === 'image' || (explicitType !== 'video' && mediaUrl.match(/\.(jpeg|jpg|gif|png|webp|svg)$/i));
 
             if (isImage) {
-              // Completely stop and unload video memory buffer
               mainVideo.pause();
               mainVideo.removeAttribute('src');
               mainVideo.load();
               mainVideo.classList.add('hidden');
 
-              // Load image strictly on demand
               mainImage.src = mediaUrl;
               imageWrapper.classList.remove('hidden');
               if (mediaTypeLabel) mediaTypeLabel.textContent = 'IMAGE DISPLAY (CLICK / SCROLL TO ZOOM & PAN)';
             } else {
-              // Unload image buffer
               imageWrapper.classList.add('hidden');
               mainImage.removeAttribute('src');
 
-              // Load and play video strictly on demand
               mainVideo.src = mediaUrl;
               mainVideo.classList.remove('hidden');
               mainVideo.load();
@@ -545,7 +549,7 @@
           }
 
           mediaSelect.addEventListener('change', updateMediaDisplay);
-          updateMediaDisplay(); // Initial trigger on-demand for selected item only
+          updateMediaDisplay();
         }
 
         // 4. Scroll Progress Bar
