@@ -152,12 +152,12 @@
         background-size: 72px 72px;
       }
 
-      /* High-DPI Mobile Image Clarity Calibration */
-      .crisp-mobile-img {
-        image-rendering: -webkit-optimize-contrast;
-        image-rendering: crisp-edges;
-        backface-visibility: hidden;
-        transform-style: preserve-3d;
+      /* Source Resolution Image Canvas Settings */
+      #mainImage {
+        max-width: none !important;
+        max-height: none !important;
+        image-rendering: auto;
+        transform-origin: center center;
         will-change: transform;
       }
     </style>
@@ -187,15 +187,15 @@
         <!-- Navigation Header -->
         <header class="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4 sm:px-6">
           <nav class="flex w-full max-w-6xl items-center justify-between border px-4 py-3 transition-all duration-300 sm:px-5 border-white/15 bg-ink/85 shadow-[0_12px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl">
-            <a href="index.html" class="group flex items-center gap-3 font-mono text-xs font-semibold uppercase tracking-[0.14em]">
+            <a href="https://app.lawrencebauda.com" class="group flex items-center gap-3 font-mono text-xs font-semibold uppercase tracking-[0.14em]">
               <span class="grid h-8 w-8 place-items-center border border-white/30 text-mist transition-colors group-hover:bg-mist group-hover:text-ink">R</span>
               <span class="text-mist">lawrencebauda.com</span>
             </a>
             <div class="hidden items-center gap-7 md:flex">
-              <a href="index.html#work" class="font-mono text-xs uppercase tracking-[0.14em] text-mist/55 transition-colors hover:text-mist">Work</a>
-              <a href="index.html#about" class="font-mono text-xs uppercase tracking-[0.14em] text-mist/55 transition-colors hover:text-mist">About</a>
-              <a href="index.html#experience" class="font-mono text-xs uppercase tracking-[0.14em] text-mist/55 transition-colors hover:text-mist">Experience</a>
-              <a href="index.html#contact" class="font-mono text-xs uppercase tracking-[0.14em] text-mist/55 transition-colors hover:text-mist">Contact</a>
+              <a href="https://app.lawrencebauda.com#work" class="font-mono text-xs uppercase tracking-[0.14em] text-mist/55 transition-colors hover:text-mist">Work</a>
+              <a href="https://app.lawrencebauda.com#about" class="font-mono text-xs uppercase tracking-[0.14em] text-mist/55 transition-colors hover:text-mist">About</a>
+              <a href="https://app.lawrencebauda.com#experience" class="font-mono text-xs uppercase tracking-[0.14em] text-mist/55 transition-colors hover:text-mist">Experience</a>
+              <a href="https://app.lawrencebauda.com#contact" class="font-mono text-xs uppercase tracking-[0.14em] text-mist/55 transition-colors hover:text-mist">Contact</a>
             </div>
             <div class="flex items-center gap-2">
               <a href="https://app.lawrencebauda.com/login" data-login class="hidden border border-mist bg-mist px-4 py-2 font-mono text-xs font-semibold uppercase tracking-[0.12em] text-ink transition-colors hover:bg-transparent hover:text-mist md:inline-block">LOGIN</a>
@@ -213,10 +213,10 @@
         <!-- Mobile Navigation Menu Overlay -->
         <div id="mobile-menu" class="fixed inset-0 z-40 hidden bg-ink/95 px-6 pt-28 backdrop-blur-xl md:hidden">
           <div class="flex flex-col gap-6 font-mono text-lg uppercase tracking-[0.14em]">
-            <a href="index.html#work" class="mobile-nav-link text-mist/70 hover:text-mist">Work</a>
-            <a href="index.html#about" class="mobile-nav-link text-mist/70 hover:text-mist">About</a>
-            <a href="index.html#experience" class="mobile-nav-link text-mist/70 hover:text-mist">Experience</a>
-            <a href="index.html#contact" class="mobile-nav-link text-mist/70 hover:text-mist">Contact</a>
+            <a href="https://app.lawrencebauda.com#work" class="mobile-nav-link text-mist/70 hover:text-mist">Work</a>
+            <a href="https://app.lawrencebauda.com#about" class="mobile-nav-link text-mist/70 hover:text-mist">About</a>
+            <a href="https://app.lawrencebauda.com#experience" class="mobile-nav-link text-mist/70 hover:text-mist">Experience</a>
+            <a href="https://app.lawrencebauda.com#contact" class="mobile-nav-link text-mist/70 hover:text-mist">Contact</a>
             <a href="https://app.lawrencebauda.com/login" data-login class="mt-4 border border-mist bg-mist py-3 text-center text-xs font-semibold uppercase tracking-[0.12em] text-ink">LOGIN</a>
           </div>
         </div>
@@ -256,7 +256,7 @@
               </div>
 
               <!-- Media Viewer Container -->
-              <div class="relative aspect-video min-h-[220px] max-h-[72vh] w-full overflow-hidden bg-black border border-white/10 flex items-center justify-center">
+              <div class="relative aspect-video h-[60vh] min-h-[300px] w-full overflow-hidden bg-black border border-white/10 flex items-center justify-center">
                 
                 <!-- Video Player Element -->
                 <video 
@@ -267,18 +267,18 @@
                   controlsList="nodownload noplaybackrate"
                   disablePictureInPicture
                   oncontextmenu="return false;"
-                  class="hidden h-full w-full max-h-[72vh] object-contain"
+                  class="hidden h-full w-full object-contain"
                 >
                   Your browser does not support the video tag.
                 </video>
 
-                <!-- Crisp High-DPI Zoomable Image Container (Strict Black Area Boundary Clamped) -->
-                <div id="imageWrapper" class="hidden h-full w-full max-h-[72vh] overflow-hidden flex items-center justify-center cursor-zoom-in relative touch-none">
+                <!-- Full Native Resolution Image Viewport (Strict Black Boundary Clamped) -->
+                <div id="imageWrapper" class="hidden h-full w-full overflow-hidden flex items-center justify-center cursor-zoom-in relative touch-none select-none">
                   <img 
                     id="mainImage" 
                     alt="Media Preview" 
                     oncontextmenu="return false;"
-                    class="crisp-mobile-img max-h-full max-w-full object-contain transition-transform duration-75 ease-out origin-center pointer-events-auto" 
+                    class="pointer-events-auto" 
                   />
                 </div>
 
@@ -350,10 +350,10 @@
       })();
     </script>
 
-    <!-- UI Motion, Hardware Precision Cursor, On-Demand Loader & Bounded Zoom/Pan Controller -->
+    <!-- UI Motion, Hardware Precision Cursor, Full Source Resolution Controller -->
     <script>
       document.addEventListener('DOMContentLoaded', () => {
-        // 1. Hardware Precision Calibrated Pointer
+        // 1. Hardware Precision Pointer
         const cursor = document.getElementById('custom-cursor');
         const cursorInner = document.getElementById('cursor-inner');
 
@@ -389,11 +389,12 @@
           });
         }
 
-        // 2. Clamped Zoom & Pan Controller (Disallows scrolling past container edges)
+        // 2. Full Source Quality Zoom & Pan Controller (Clamped strictly inside container black area)
         const imageWrapper = document.getElementById('imageWrapper');
         const mainImage = document.getElementById('mainImage');
         
         let scale = 1;
+        let baseScale = 1;
         let translateX = 0;
         let translateY = 0;
         let isDragging = false;
@@ -401,21 +402,27 @@
         let startX = 0;
         let startY = 0;
         let initialTouchDist = 0;
-        let lastTapTime = 0;
+
+        function calcBaseScale() {
+          if (!mainImage.naturalWidth || !imageWrapper.clientWidth) return 1;
+          const containerW = imageWrapper.clientWidth;
+          const containerH = imageWrapper.clientHeight;
+          const scaleW = containerW / mainImage.naturalWidth;
+          const scaleH = containerH / mainImage.naturalHeight;
+          return Math.min(scaleW, scaleH);
+        }
 
         function clampTransform() {
-          if (!mainImage || !imageWrapper || scale <= 1) {
-            translateX = 0;
-            translateY = 0;
-            return;
-          }
+          if (!mainImage || !imageWrapper) return;
+          
+          const currentScale = scale * baseScale;
+          const renderedWidth = mainImage.naturalWidth * currentScale;
+          const renderedHeight = mainImage.naturalHeight * currentScale;
+          const containerW = imageWrapper.clientWidth;
+          const containerH = imageWrapper.clientHeight;
 
-          const wrapperRect = imageWrapper.getBoundingClientRect();
-          const imgRect = mainImage.getBoundingClientRect();
-
-          // Calculate maximum scroll boundaries relative to container dimensions
-          const maxTx = Math.max(0, (imgRect.width - wrapperRect.width) / 2);
-          const maxTy = Math.max(0, (imgRect.height - wrapperRect.height) / 2);
+          const maxTx = Math.max(0, (renderedWidth - containerW) / 2);
+          const maxTy = Math.max(0, (renderedHeight - containerH) / 2);
 
           translateX = Math.min(Math.max(translateX, -maxTx), maxTx);
           translateY = Math.min(Math.max(translateY, -maxTy), maxTy);
@@ -424,7 +431,8 @@
         function updateTransform() {
           if (!mainImage || !imageWrapper) return;
           clampTransform();
-          mainImage.style.transform = `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`;
+          const currentScale = scale * baseScale;
+          mainImage.style.transform = `translate3d(${translateX}px, ${translateY}px, 0) scale(${currentScale})`;
           
           if (scale > 1) {
             imageWrapper.style.cursor = isDragging ? 'grabbing' : 'grab';
@@ -434,6 +442,7 @@
         }
 
         function resetZoom() {
+          baseScale = calcBaseScale();
           scale = 1;
           translateX = 0;
           translateY = 0;
@@ -442,23 +451,31 @@
           updateTransform();
         }
 
+        mainImage.addEventListener('load', () => {
+          resetZoom();
+        });
+
+        window.addEventListener('resize', () => {
+          if (!imageWrapper.classList.contains('hidden')) {
+            resetZoom();
+          }
+        });
+
         if (imageWrapper && mainImage) {
-          // A. Double-Tap / Click Toggle Zoom
+          // A. Click / Tap to Toggle Zoom
           imageWrapper.addEventListener('click', (e) => {
             if (hasDragged) return;
-
-            const now = Date.now();
-            lastTapTime = now;
 
             if (scale > 1) {
               resetZoom();
             } else {
-              scale = 3.5;
+              // Zoom directly to 100% original pixel density (scale = 1 / baseScale)
+              scale = Math.max(2.5, 1 / baseScale);
               const rect = imageWrapper.getBoundingClientRect();
               const offsetX = (e.clientX - rect.left) - rect.width / 2;
               const offsetY = (e.clientY - rect.top) - rect.height / 2;
-              translateX = -offsetX * 2;
-              translateY = -offsetY * 2;
+              translateX = -offsetX * (scale - 1);
+              translateY = -offsetY * (scale - 1);
               updateTransform();
             }
           });
@@ -467,7 +484,7 @@
           imageWrapper.addEventListener('wheel', (e) => {
             e.preventDefault();
             const delta = e.deltaY < 0 ? 0.35 : -0.35;
-            const newScale = Math.min(Math.max(scale + delta, 1), 6);
+            const newScale = Math.min(Math.max(scale + delta, 1), 8);
 
             if (newScale !== scale) {
               scale = newScale;
@@ -528,7 +545,7 @@
                 e.touches[0].clientY - e.touches[1].clientY
               );
               const factor = currentDist / initialTouchDist;
-              scale = Math.min(Math.max(scale * factor, 1), 6);
+              scale = Math.min(Math.max(scale * factor, 1), 8);
               initialTouchDist = currentDist;
               updateTransform();
             }
@@ -546,8 +563,6 @@
 
         if (mediaSelect && mainVideo && mainImage) {
           function updateMediaDisplay() {
-            resetZoom();
-            
             const selectedOpt = mediaSelect.options[mediaSelect.selectedIndex];
             const mediaUrl = selectedOpt.value;
             const explicitType = selectedOpt.getAttribute('data-type');
@@ -562,7 +577,7 @@
 
               mainImage.src = mediaUrl;
               imageWrapper.classList.remove('hidden');
-              if (mediaTypeLabel) mediaTypeLabel.textContent = 'IMAGE DISPLAY';
+              if (mediaTypeLabel) mediaTypeLabel.textContent = 'IMAGE DISPLAY (TAP / SCROLL TO ZOOM & PAN)';
             } else {
               imageWrapper.classList.add('hidden');
               mainImage.removeAttribute('src');
