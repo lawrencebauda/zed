@@ -15,6 +15,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
+    <meta name="referrer" content="no-referrer">
+    <script>if (window.top !== window.self) { try { window.top.location = window.self.location; } catch (e) { document.documentElement.style.display = 'none'; } }</script>
     <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -278,7 +280,7 @@
               <a href="#contact" class="font-mono text-xs uppercase tracking-[0.14em] text-mist/55 transition-colors hover:text-mist">Contact</a>
             </div>
             <div class="flex items-center gap-2">
-              <a href="https://app.lawrencebauda.com/login" data-login class="hidden border border-mist bg-mist px-4 py-2 font-mono text-xs font-semibold uppercase tracking-[0.12em] text-ink transition-colors hover:bg-transparent hover:text-mist md:inline-block">LOGIN</a>
+              <a href="#" role="button" data-login class="hidden border border-mist bg-mist px-4 py-2 font-mono text-xs font-semibold uppercase tracking-[0.12em] text-ink transition-colors hover:bg-transparent hover:text-mist md:inline-block">LOGIN</a>
               <button type="button" id="mobile-menu-toggle" aria-label="Toggle menu" class="grid h-9 w-9 place-items-center border border-white/25 text-mist md:hidden">
                 <div class="space-y-1.5">
                   <span class="block h-px w-4 bg-current"></span>
@@ -297,7 +299,7 @@
             <a href="#about" class="mobile-nav-link text-mist/70 hover:text-mist">About</a>
             <a href="#experience" class="mobile-nav-link text-mist/70 hover:text-mist">Experience</a>
             <a href="#contact" class="mobile-nav-link text-mist/70 hover:text-mist">Contact</a>
-            <a href="https://app.lawrencebauda.com/login" data-login class="mt-4 border border-mist bg-mist py-3 text-center text-xs font-semibold uppercase tracking-[0.12em] text-ink">LOGIN</a>
+            <a href="#" role="button" data-login class="mt-4 border border-mist bg-mist py-3 text-center text-xs font-semibold uppercase tracking-[0.12em] text-ink">LOGIN</a>
           </div>
         </div>
 
@@ -331,7 +333,7 @@
                       Full-stack engineer with 13+ years shipping performant interfaces and resilient backends. Founder of ZE Documentation, ride-hailing operator, and former global esports finalist.
                     </p>
                     <div class="mt-8 flex flex-wrap items-center gap-3">
-                      <a href="https://app.lawrencebauda.com/login" data-login data-cursor="true" class="border border-mist bg-mist px-6 py-3 font-mono text-xs font-semibold uppercase tracking-[0.12em] text-ink transition-colors hover:bg-transparent hover:text-mist">Login</a>
+                      <a href="#" role="button" data-login data-cursor="true" class="border border-mist bg-mist px-6 py-3 font-mono text-xs font-semibold uppercase tracking-[0.12em] text-ink transition-colors hover:bg-transparent hover:text-mist">Login</a>
                       <a href="https://lawrencebauda.com/guides" data-cursor="true" class="border border-white/25 px-6 py-3 font-mono text-xs font-semibold uppercase tracking-[0.12em] text-mist transition-colors hover:border-mist">GUIDES</a>
                       <a href="https://www.facebook.com/callmerenzu" target="_blank" rel="noreferrer" data-cursor="true" class="px-3 py-3 font-mono text-xs uppercase tracking-[0.12em] text-mist/45 transition-colors hover:text-mist">Facebook ↗</a>
                     </div>
@@ -753,7 +755,7 @@
                     <div>
                       <p class="max-w-md leading-relaxed text-black/60">I'm currently taking on a few select projects. Whether it's a greenfield build or rescuing something gnarly — let's talk.</p>
                       <div class="mt-8 flex flex-col gap-3 sm:flex-row lg:flex-col">
-                        <a href="https://app.lawrencebauda.com/login" data-login data-cursor="true" class="border border-black bg-black px-6 py-3.5 text-center font-mono text-xs font-semibold uppercase tracking-[0.12em] text-white transition-colors hover:bg-transparent hover:text-black">login</a>
+                        <a href="#" role="button" data-login data-cursor="true" class="border border-black bg-black px-6 py-3.5 text-center font-mono text-xs font-semibold uppercase tracking-[0.12em] text-white transition-colors hover:bg-transparent hover:text-black">login</a>
                         <a href="https://www.facebook.com/callmerenzu" target="_blank" rel="noreferrer" class="border border-black/30 px-6 py-3.5 text-center font-mono text-xs font-semibold uppercase tracking-[0.12em] text-black transition-colors hover:border-black">Facebook Profile ↗</a>
                       </div>
                     </div>
@@ -1005,7 +1007,11 @@
       var box = document.getElementById('login-status');
       var buttons = document.querySelectorAll('[data-login]');
       var busy = false, hideTimer = 0;
-      buttons.forEach(function (b) { b.setAttribute('href', SERVER_URL + '/login'); b.addEventListener('click', onLogin); });
+      buttons.forEach(function (b) {
+         b.setAttribute('href', '#');
+         b.addEventListener('click', onLogin);
+         b.addEventListener('auxclick', function (e) { e.preventDefault(); });
+       });
 
       function show(html, kind, keep) {
         clearTimeout(hideTimer);
@@ -1041,6 +1047,8 @@
 
       /* ---- Access gate ---- */
       var PASS_HASH = 'e1e9750c6776098f71a1e14a321c9567ff460284eba141c2c4f2b1bb2a04b472'; // SHA-256
+       // Upgrade: paste the line from hash-tool.html here to use salted PBKDF2 instead of plain SHA-256
+       var PASS_KDF = null; // e.g. { salt: '...', iter: 600000, hash: '...' }
       var modal = document.getElementById('pw-modal');
       var input = document.getElementById('pw-input');
       var msg = document.getElementById('pw-msg');
@@ -1054,6 +1062,30 @@
           return Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
         });
       }
+      function hexToBytes(h) { var a = new Uint8Array(h.length / 2); for (var i = 0; i < a.length; i++) a[i] = parseInt(h.substr(i * 2, 2), 16); return a; }
+       function toHex(buf) { return Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join(''); }
+       function sameStr(a, b) { if (a.length !== b.length) return false; var d = 0; for (var i = 0; i < a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i); return d === 0; }
+       async function verifyPass(val) {
+         if (PASS_KDF) {
+           var key = await crypto.subtle.importKey('raw', new TextEncoder().encode(val), 'PBKDF2', false, ['deriveBits']);
+           var bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: hexToBytes(PASS_KDF.salt), iterations: PASS_KDF.iter }, key, 256);
+           return sameStr(toHex(bits), PASS_KDF.hash);
+         }
+         return sameStr(await sha256(val), PASS_HASH);
+       }
+       /* Attempt limiter: 5 wrong tries, then a growing lockout */
+       function lockLeft() { try { return Math.max(0, (+localStorage.getItem('pw_lock') || 0) - Date.now()); } catch (e) { return 0; } }
+       function noteFail() {
+         try {
+           var n = (+localStorage.getItem('pw_fail') || 0) + 1;
+           localStorage.setItem('pw_fail', n);
+           if (n >= 5) {
+             var secs = Math.min(900, 30 * Math.pow(2, n - 5));
+             localStorage.setItem('pw_lock', Date.now() + secs * 1000);
+           }
+         } catch (e) {}
+       }
+       function clearFails() { try { localStorage.removeItem('pw_fail'); localStorage.removeItem('pw_lock'); } catch (e) {} }
       function setMsg(t, err) { msg.textContent = t; msg.className = err ? 'err' : ''; }
       function openGate() {
         return new Promise(function (resolve) {
@@ -1078,12 +1110,14 @@
         if (!val) { setMsg('Passphrase required.', true); return; }
         submitBtn.disabled = true;
         var ok = false;
-        try { ok = (await sha256(val)) === PASS_HASH; }
+        var wait = lockLeft();
+         if (wait > 0) { setMsg('Too many attempts. Try again in ' + Math.ceil(wait / 1000) + 's.', true); submitBtn.disabled = false; return; }
+         try { ok = await verifyPass(val); }
         catch (e) { setMsg('Secure context required.', true); submitBtn.disabled = false; return; }
         submitBtn.disabled = false;
-        if (ok) { setMsg('Access granted.', false); setTimeout(function () { closeGate(true); }, 250); }
+        if (ok) { clearFails(); setMsg('Access granted.', false); setTimeout(function () { closeGate(true); }, 250); }
         else {
-          setMsg('Access denied.', true);
+          noteFail(); setMsg('Access denied.', true);
           wrap.classList.remove('shake'); void wrap.offsetWidth; wrap.classList.add('shake');
           input.select();
         }
@@ -1115,11 +1149,13 @@
         e.preventDefault();
         if (busy) return;
         busy = true;
-        if (!(await openGate())) { busy = false; return; }
         show('Checking server…', '', true);
         if (await isUp(CHECK_TIMEOUT_MS)) { go(); return; }
 
-        show('Server is offline.', '', true);
+        /* Server is offline: passphrase required before it can be started */
+        box.className = '';
+        if (!(await openGate())) { busy = false; return; }
+        show('Server is offline. Starting…', '', true);
         launch();
         var deadline = Date.now() + WAIT_MS;
         while (Date.now() < deadline) {
