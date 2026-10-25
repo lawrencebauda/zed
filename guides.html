@@ -70,13 +70,35 @@
     
     <link rel="stylesheet" href="/style.css">
 
+    <!-- Tailwind CSS Engine -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              ink: '#0a0a0a',
+              'ink-soft': '#111111',
+              mist: '#f4f4f0',
+              accent: '#f4f4f0',
+              'accent-2': '#b8b8b2',
+              'accent-3': '#73736d',
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            }
+          }
+        }
+      }
+    </script>
+
     <style>
       :root {
         --color-ink: #0a0a0a;
         --color-ink-soft: #111111;
         --color-mist: #f4f4f0;
       }
-      /* Fallback utility classes for search crawlers */
       .bg-ink { background-color: var(--color-ink); }
       .bg-ink-soft { background-color: var(--color-ink-soft); }
       .bg-mist { background-color: var(--color-mist); }
@@ -104,13 +126,18 @@
         to { transform: translateX(-50%); }
       }
 
-      /* Fixed Stacking: z-index 5 places canvas above grid background vignette (z-0) and below main content (z-10) */
+      /* Fixed Stacking Context & Forced Widescreen Aspect Ratio */
       #matrixCanvas {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         height: 100lvh;
         z-index: 5;
         pointer-events: none;
         opacity: 0.55;
+      }
+      .video-wrapper {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        min-height: 280px;
       }
       #login-status {
         position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 16px);
@@ -139,7 +166,7 @@
           <div class="absolute inset-x-0 top-0 h-px bg-white/20"></div>
         </div>
 
-        <!-- Digital rain canvas (Layer 5) -->
+        <!-- Digital Rain Canvas (Layer 5) -->
         <canvas id="matrixCanvas" aria-hidden="true"></canvas>
 
         <!-- Custom Interactive Mouse Pointer -->
@@ -188,9 +215,9 @@
         </div>
 
         <!-- Main Content (Layer 10: Centered Video Player) -->
-        <main class="relative z-10 flex flex-1 items-center justify-center px-4 pb-16 pt-28 sm:px-6">
+        <main class="relative z-10 flex min-h-[calc(100vh-140px)] flex-1 items-center justify-center px-4 pb-16 pt-28 sm:px-6">
           <div class="w-full max-w-5xl">
-            <!-- Glassmorphic Container matching theme -->
+            <!-- Glassmorphic Container -->
             <div class="border border-white/15 bg-ink/85 p-4 sm:p-8 backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
               
               <!-- Video Player Header Bar -->
@@ -202,8 +229,8 @@
                 <span>callmerenzu / 2026</span>
               </div>
 
-              <!-- Video Frame -->
-              <div class="relative aspect-video w-full overflow-hidden border border-white/15 bg-black">
+              <!-- Video Frame with explicit 16:9 aspect ratio fallback -->
+              <div class="video-wrapper relative overflow-hidden border border-white/15 bg-black">
                 <video 
                   controls 
                   autoplay 
