@@ -235,48 +235,50 @@
                   >
                     <!-- ============================================================================================== -->
                     <!-- EASY CONFIGURATION: ADD OR EDIT YOUR LINKS BELOW                                                -->
+                    <!-- Files load ON DEMAND when selected (no preloading on page load)                                -->
                     <!-- Set data-type="video" for MP4 links or data-type="image" for PNG/JPG/WEBP image links          -->
                     <!-- ============================================================================================== -->
                     <option data-type="video" value="https://raw.githubusercontent.com/username/repository/main/video.mp4">Video 01 — Main Stream</option>
                     <option data-type="video" value="https://raw.githubusercontent.com/username/repository/main/video2.mp4">Video 02 — Feature Demo</option>
-                    <option data-type="image" value="https://raw.githubusercontent.com/lawrencebauda/zed/main/(ZED)Images/INDRIVE.jpg">INDRIVE - Instructions</option>
+                    <option data-type="image" value="https://raw.githubusercontent.com/username/repository/main/preview.png">Image 01 — System Preview</option>
                     <option data-type="image" value="https://raw.githubusercontent.com/username/repository/main/diagram.png">Image 02 — Architecture Diagram</option>
                   </select>
                 </div>
               </div>
 
-              <!-- Media Viewer Container (Supports Video & Image seamlessly) -->
+              <!-- Media Viewer Container (On-demand Lazy Loading + Pan & Zoom Image Viewer) -->
               <div class="relative aspect-video max-h-[65vh] w-full overflow-hidden bg-black border border-white/10 flex items-center justify-center">
-                <!-- Video Player Element -->
+                
+                <!-- Video Player Element (preload="none", src assigned strictly on selection) -->
                 <video 
                   id="mainVideo"
                   controls 
-                  autoplay 
                   playsinline
+                  preload="none"
                   controlsList="nodownload noplaybackrate"
                   disablePictureInPicture
                   oncontextmenu="return false;"
-                  preload="metadata" 
-                  class="h-full w-full max-h-[65vh] object-contain"
+                  class="hidden h-full w-full max-h-[65vh] object-contain"
                 >
-                  <source id="videoSource" src="https://raw.githubusercontent.com/username/repository/main/video.mp4" type="video/mp4">
                   Your browser does not support the video tag.
                 </video>
 
-                <!-- Image Viewer Element -->
-                <img 
-                  id="mainImage" 
-                  src="" 
-                  alt="Media Preview" 
-                  oncontextmenu="return false;"
-                  class="hidden h-full w-full max-h-[65vh] object-contain" 
-                />
+                <!-- Zoomable Image Container -->
+                <div id="imageWrapper" class="hidden h-full w-full max-h-[65vh] overflow-hidden flex items-center justify-center cursor-zoom-in relative">
+                  <img 
+                    id="mainImage" 
+                    alt="Media Preview" 
+                    oncontextmenu="return false;"
+                    class="h-full w-full max-h-[65vh] object-contain transition-transform duration-200 ease-out origin-center" 
+                  />
+                </div>
+
               </div>
 
               <!-- Media Subtitle Footer -->
               <div class="mt-4 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.16em] text-mist/40">
-                <span id="mediaTypeLabel">MP4 Media Stream</span>
-                <span>ZE Documentation</span>
+                <span id="mediaTypeLabel">MP4 MEDIA STREAM</span>
+                <span>ZE DOCUMENTATION</span>
               </div>
 
             </div>
@@ -339,7 +341,7 @@
       })();
     </script>
 
-    <!-- UI Motion, Cursor & Media Switcher Controller Script -->
+    <!-- UI Motion, Interactive Pointer, On-Demand Loader & Zoom Controller -->
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         // 1. Calibrated Custom Pointer
@@ -369,29 +371,83 @@
           });
         }
 
-        // 2. Dual Media Switcher (Video vs Image)
+        // 2. Interactive Image Zoom & Pan Logic
+        const imageWrapper = document.getElementById('imageWrapper');
+        const mainImage = document.getElementById('mainImage');
+        let isZoomed = false;
+
+        function resetZoom() {
+          isZoomed = false;
+          if (mainImage && imageWrapper) {
+            mainImage.style.transform = 'scale(1)';
+            mainImage.style.transformOrigin = 'center center';
+            imageWrapper.classList.remove('cursor-zoom-out');
+            imageWrapper.classList.add('cursor-zoom-in');
+          }
+        }
+
+        if (imageWrapper && mainImage) {
+          imageWrapper.addEventListener('click', (e) => {
+            isZoomed = !isZoomed;
+            if (isZoomed) {
+              const rect = imageWrapper.getBoundingClientRect();
+              const x = ((e.clientX - rect.left) / rect.width) * 100;
+              const y = ((e.clientY - rect.top) / rect.height) * 100;
+              mainImage.style.transformOrigin = `${x}% ${y}%`;
+              mainImage.style.transform = 'scale(2.5)';
+              imageWrapper.classList.remove('cursor-zoom-in');
+              imageWrapper.classList.add('cursor-zoom-out');
+            } else {
+              resetZoom();
+            }
+          });
+
+          imageWrapper.addEventListener('mousemove', (e) => {
+            if (!isZoomed) return;
+            const rect = imageWrapper.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+            mainImage.style.transformOrigin = `${x}% ${y}%`;
+          });
+
+          imageWrapper.addEventListener('mouseleave', () => {
+            if (isZoomed) resetZoom();
+          });
+        }
+
+        // 3. Strict On-Demand Lazy Media Switcher
         const mediaSelect = document.getElementById('mediaSelect');
         const mainVideo = document.getElementById('mainVideo');
-        const mainImage = document.getElementById('mainImage');
         const mediaTypeLabel = document.getElementById('mediaTypeLabel');
 
         if (mediaSelect && mainVideo && mainImage) {
           function updateMediaDisplay() {
+            resetZoom();
+            
             const selectedOpt = mediaSelect.options[mediaSelect.selectedIndex];
             const mediaUrl = selectedOpt.value;
             const explicitType = selectedOpt.getAttribute('data-type');
             
-            // Auto-detect type if data-type attribute is omitted
+            // Auto-detect media type if data-type attribute is omitted
             const isImage = explicitType === 'image' || (explicitType !== 'video' && mediaUrl.match(/\.(jpeg|jpg|gif|png|webp|svg)$/i));
 
             if (isImage) {
+              // Completely stop and unload video memory buffer
               mainVideo.pause();
+              mainVideo.removeAttribute('src');
+              mainVideo.load();
               mainVideo.classList.add('hidden');
+
+              // Load image strictly on selection
               mainImage.src = mediaUrl;
-              mainImage.classList.remove('hidden');
-              if (mediaTypeLabel) mediaTypeLabel.textContent = 'IMAGE DISPLAY';
+              imageWrapper.classList.remove('hidden');
+              if (mediaTypeLabel) mediaTypeLabel.textContent = 'IMAGE DISPLAY (CLICK TO ZOOM)';
             } else {
-              mainImage.classList.add('hidden');
+              // Unload image buffer
+              imageWrapper.classList.add('hidden');
+              mainImage.removeAttribute('src');
+
+              // Load and play video strictly on selection
               mainVideo.src = mediaUrl;
               mainVideo.classList.remove('hidden');
               mainVideo.load();
@@ -401,10 +457,10 @@
           }
 
           mediaSelect.addEventListener('change', updateMediaDisplay);
-          updateMediaDisplay(); // Initial load check
+          updateMediaDisplay(); // Initial trigger on-demand for selected item only
         }
 
-        // 3. Scroll Progress Bar
+        // 4. Scroll Progress Bar
         const progressBar = document.getElementById('progress-bar');
         window.addEventListener('scroll', () => {
           if (progressBar) {
@@ -414,7 +470,7 @@
           }
         });
 
-        // 4. Mobile Menu Toggle
+        // 5. Mobile Menu Toggle
         const menuBtn = document.getElementById('mobile-menu-toggle');
         const mobileMenu = document.getElementById('mobile-menu');
         if (menuBtn && mobileMenu) {
