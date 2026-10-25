@@ -151,6 +151,15 @@
         background-image: linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
         background-size: 72px 72px;
       }
+
+      /* High-DPI Mobile Image Clarity Calibration */
+      .crisp-mobile-img {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+        backface-visibility: hidden;
+        transform-style: preserve-3d;
+        will-change: transform;
+      }
     </style>
 </head>
   <body>
@@ -238,18 +247,18 @@
                     <!-- Files load ON DEMAND when selected (no preloading on page load)                                -->
                     <!-- Set data-type="video" for MP4 links or data-type="image" for PNG/JPG/WEBP image links          -->
                     <!-- ============================================================================================== -->
-                    <option data-type="video" value="https://raw.githubusercontent.com/lawrencebauda/zed/main/(ZED)RAW/INDRIVE_VIDEO.mp4">INDRIVE - Tutorial</option>
                     <option data-type="image" value="https://raw.githubusercontent.com/lawrencebauda/zed/main/(ZED)RAW/INDRIVE.jpg">INDRIVE - Instructions</option>
+                    <option data-type="video" value="https://raw.githubusercontent.com/lawrencebauda/zed/main/(ZED)RAW/INDRIVE_VIDEO.mp4">INDRIVE - Tutorial</option>
                     <option data-type="image" value="https://raw.githubusercontent.com/username/repository/main/preview.png">Image 01 — System Preview</option>
                     <option data-type="image" value="https://raw.githubusercontent.com/username/repository/main/diagram.png">Image 02 — Architecture Diagram</option>
                   </select>
                 </div>
               </div>
 
-              <!-- Media Viewer Container (On-demand Lazy Loading + Pan & Zoom Image Viewer) -->
-              <div class="relative aspect-video max-h-[65vh] w-full overflow-hidden bg-black border border-white/10 flex items-center justify-center">
+              <!-- Media Viewer Container -->
+              <div class="relative aspect-video min-h-[220px] max-h-[72vh] w-full overflow-hidden bg-black border border-white/10 flex items-center justify-center">
                 
-                <!-- Video Player Element (preload="none", src assigned strictly on selection) -->
+                <!-- Video Player Element -->
                 <video 
                   id="mainVideo"
                   controls 
@@ -258,18 +267,18 @@
                   controlsList="nodownload noplaybackrate"
                   disablePictureInPicture
                   oncontextmenu="return false;"
-                  class="hidden h-full w-full max-h-[65vh] object-contain"
+                  class="hidden h-full w-full max-h-[72vh] object-contain"
                 >
                   Your browser does not support the video tag.
                 </video>
 
-                <!-- Fully Interactive Zoom & Pan Image Wrapper -->
-                <div id="imageWrapper" class="hidden h-full w-full max-h-[65vh] overflow-hidden flex items-center justify-center cursor-zoom-in relative touch-none">
+                <!-- Crisp High-DPI Zoomable Image Container (Strict Black Area Boundary Clamped) -->
+                <div id="imageWrapper" class="hidden h-full w-full max-h-[72vh] overflow-hidden flex items-center justify-center cursor-zoom-in relative touch-none">
                   <img 
                     id="mainImage" 
                     alt="Media Preview" 
                     oncontextmenu="return false;"
-                    class="h-full w-full max-h-[65vh] object-contain transition-transform duration-75 ease-out origin-center pointer-events-auto" 
+                    class="crisp-mobile-img max-h-full max-w-full object-contain transition-transform duration-75 ease-out origin-center pointer-events-auto" 
                   />
                 </div>
 
@@ -341,10 +350,10 @@
       })();
     </script>
 
-    <!-- UI Motion, Hardware Precision Cursor, On-Demand Loader & Zoom/Pan Controller -->
+    <!-- UI Motion, Hardware Precision Cursor, On-Demand Loader & Bounded Zoom/Pan Controller -->
     <script>
       document.addEventListener('DOMContentLoaded', () => {
-        // 1. Hardware Precision Calibrated Pointer (RAF Sync, 0-Lag, No CSS Transform Interpolation)
+        // 1. Hardware Precision Calibrated Pointer
         const cursor = document.getElementById('custom-cursor');
         const cursorInner = document.getElementById('cursor-inner');
 
@@ -380,7 +389,7 @@
           });
         }
 
-        // 2. Advanced Interactive Zoom & Pan Controller (Click, Scroll Wheel, Drag & Touch)
+        // 2. Clamped Zoom & Pan Controller (Disallows scrolling past container edges)
         const imageWrapper = document.getElementById('imageWrapper');
         const mainImage = document.getElementById('mainImage');
         
@@ -392,9 +401,29 @@
         let startX = 0;
         let startY = 0;
         let initialTouchDist = 0;
+        let lastTapTime = 0;
+
+        function clampTransform() {
+          if (!mainImage || !imageWrapper || scale <= 1) {
+            translateX = 0;
+            translateY = 0;
+            return;
+          }
+
+          const wrapperRect = imageWrapper.getBoundingClientRect();
+          const imgRect = mainImage.getBoundingClientRect();
+
+          // Calculate maximum scroll boundaries relative to container dimensions
+          const maxTx = Math.max(0, (imgRect.width - wrapperRect.width) / 2);
+          const maxTy = Math.max(0, (imgRect.height - wrapperRect.height) / 2);
+
+          translateX = Math.min(Math.max(translateX, -maxTx), maxTx);
+          translateY = Math.min(Math.max(translateY, -maxTy), maxTy);
+        }
 
         function updateTransform() {
           if (!mainImage || !imageWrapper) return;
+          clampTransform();
           mainImage.style.transform = `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`;
           
           if (scale > 1) {
@@ -414,19 +443,22 @@
         }
 
         if (imageWrapper && mainImage) {
-          // A. Click to toggle zoom
+          // A. Double-Tap / Click Toggle Zoom
           imageWrapper.addEventListener('click', (e) => {
             if (hasDragged) return;
+
+            const now = Date.now();
+            lastTapTime = now;
 
             if (scale > 1) {
               resetZoom();
             } else {
-              scale = 2.5;
+              scale = 3.5;
               const rect = imageWrapper.getBoundingClientRect();
               const offsetX = (e.clientX - rect.left) - rect.width / 2;
               const offsetY = (e.clientY - rect.top) - rect.height / 2;
-              translateX = -offsetX * 1.5;
-              translateY = -offsetY * 1.5;
+              translateX = -offsetX * 2;
+              translateY = -offsetY * 2;
               updateTransform();
             }
           });
@@ -434,15 +466,11 @@
           // B. Scroll Wheel Zooming
           imageWrapper.addEventListener('wheel', (e) => {
             e.preventDefault();
-            const delta = e.deltaY < 0 ? 0.25 : -0.25;
-            const newScale = Math.min(Math.max(scale + delta, 1), 5);
+            const delta = e.deltaY < 0 ? 0.35 : -0.35;
+            const newScale = Math.min(Math.max(scale + delta, 1), 6);
 
             if (newScale !== scale) {
               scale = newScale;
-              if (scale === 1) {
-                translateX = 0;
-                translateY = 0;
-              }
               updateTransform();
             }
           }, { passive: false });
@@ -472,7 +500,7 @@
             }
           });
 
-          // D. Touch Gestures for Mobile (Pinch to Zoom & Drag to Pan)
+          // D. Mobile Touch Gestures
           imageWrapper.addEventListener('touchstart', (e) => {
             if (e.touches.length === 1 && scale > 1) {
               isDragging = true;
@@ -500,9 +528,8 @@
                 e.touches[0].clientY - e.touches[1].clientY
               );
               const factor = currentDist / initialTouchDist;
-              scale = Math.min(Math.max(scale * factor, 1), 5);
+              scale = Math.min(Math.max(scale * factor, 1), 6);
               initialTouchDist = currentDist;
-              if (scale === 1) { translateX = 0; translateY = 0; }
               updateTransform();
             }
           }, { passive: true });
@@ -535,7 +562,7 @@
 
               mainImage.src = mediaUrl;
               imageWrapper.classList.remove('hidden');
-              if (mediaTypeLabel) mediaTypeLabel.textContent = 'IMAGE DISPLAY (CLICK / SCROLL TO ZOOM & PAN)';
+              if (mediaTypeLabel) mediaTypeLabel.textContent = 'IMAGE DISPLAY (TAP / SCROLL TO ZOOM & PAN)';
             } else {
               imageWrapper.classList.add('hidden');
               mainImage.removeAttribute('src');
