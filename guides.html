@@ -3,74 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Lawrence Bauda: Where systems thinking meets pixel craft</title>
-	<meta name="description" content="The sole proprietor and software developer of ZE Documentation. 13+ years shipping performant interfaces and resilient backends.">
-	<meta property="og:title" content="Lawrence Bauda: Where systems thinking meets pixel craft">
-	<meta property="og:site_name" content="Lawrence Bauda">
-    <link rel="canonical" href="https://lawrencebauda.com/">
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <title>ZE Documentation — Video Player</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-
-    <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "name": "Lawrence Bauda",
-  "alternateName": "Renzu",
-  "jobTitle": "Full-Stack Software Developer & Founder of ZE Documentation",
-  "description": "Full-stack engineer with 13+ years of experience in system architecture, automated workflows, and ride-hailing software solutions. Founder of ZE Documentation.",
-  "url": "https://lawrencebauda.com",
-  "homeLocation": {
-    "@type": "Place",
-    "name": "Manila, Philippines"
-  },
-  "knowsAbout": [
-    "Software Development",
-    "Full-Stack Engineering",
-    "TypeScript",
-    "React",
-    "Next.js",
-    "Node.js",
-    "Python",
-    "Playwright",
-    "Lua",
-    "MTA:SA Server Architecture",
-    "TNVS Platform Compliance",
-    "LTFRB Regulations"
-  ],
-  "worksFor": {
-    "@type": "Organization",
-    "name": "ZE Documentation",
-    "foundingDate": "2026-06"
-  },
-  "sameAs": [
-    "https://facebook.com",
-    "https://crunchbase.com"
-  ]
-}
-</script>
-
-<script>
-  document.title = "LAWRENCE BAUDA";
-</script>
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "Lawrence Bauda",
-  "alternateName": "Renzu",
-  "url": "https://lawrencebauda.com/"
-}
-</script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="/style.css">
-
-    <!-- Tailwind CSS Engine -->
+    <!-- Tailwind CSS Engine Engine (Required for aspect-video and layout sizing) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -78,11 +17,7 @@
           extend: {
             colors: {
               ink: '#0a0a0a',
-              'ink-soft': '#111111',
               mist: '#f4f4f0',
-              accent: '#f4f4f0',
-              'accent-2': '#b8b8b2',
-              'accent-3': '#73736d',
             },
             fontFamily: {
               sans: ['Inter', 'sans-serif'],
@@ -94,183 +29,87 @@
     </script>
 
     <style>
-      :root {
-        --color-ink: #0a0a0a;
-        --color-ink-soft: #111111;
-        --color-mist: #f4f4f0;
-      }
-      .bg-ink { background-color: var(--color-ink); }
-      .bg-ink-soft { background-color: var(--color-ink-soft); }
-      .bg-mist { background-color: var(--color-mist); }
-      .text-mist { color: var(--color-mist); }
-      .border-mist { border-color: var(--color-mist); }
-      .font-sans { font-family: 'Inter', sans-serif; }
-      .font-mono { font-family: 'JetBrains Mono', monospace; }
-
       * { box-sizing: border-box; }
-      html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
-      body {
+      html, body {
         margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
         background: #0a0a0a;
         color: #f4f4f0;
         font-family: 'Inter', sans-serif;
-        overflow-x: hidden;
-      }
-      ::-webkit-scrollbar { width: 8px; }
-      ::-webkit-scrollbar-track { background: #0a0a0a; }
-      ::-webkit-scrollbar-thumb { background: #3a3a37; border: 2px solid #0a0a0a; }
-      ::-webkit-scrollbar-thumb:hover { background: #5a5a55; }
-      ::selection { background: #f4f4f0; color: #0a0a0a; }
-      @keyframes marquee {
-        from { transform: translateX(0); }
-        to { transform: translateX(-50%); }
+        overflow: hidden;
       }
 
-      /* Fixed Stacking Context & Forced Widescreen Aspect Ratio */
+      ::selection { background: #f4f4f0; color: #0a0a0a; }
+
+      /* Layer 5: Placed above dark grid background (z-0) and below main UI card (z-10) */
       #matrixCanvas {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
         height: 100lvh;
         z-index: 5;
         pointer-events: none;
         opacity: 0.55;
       }
-      .video-wrapper {
-        width: 100%;
-        aspect-ratio: 16 / 9;
-        min-height: 280px;
-      }
-      #login-status {
-        position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 16px);
-        z-index: 120; max-width: min(92vw, 460px); padding: 12px 16px;
-        background: rgba(10,10,10,.92); color: #f4f4f0; border: 1px solid rgba(255,255,255,.3);
-        font: 500 12px/1.5 'JetBrains Mono', monospace; letter-spacing: .04em; text-align: center;
-        opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s;
-      }
-      #login-status.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
-      #login-status a { color: #fff; text-decoration: underline; }
-      #login-status.error { border-color: #ff6b6b; }
-      .animate-marquee { animation: marquee 36s linear infinite; }
+
       .grid-bg {
-        background-image: linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+        background-image: linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px), 
+                          linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
         background-size: 72px 72px;
       }
     </style>
 </head>
-  <body>
-    <div id="root">
-      <div class="relative flex min-h-screen flex-col justify-between">
-        <!-- Background Grid (Layer 0) -->
-        <div class="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-ink">
-          <div class="grid-bg absolute inset-0 opacity-35 [mask-image:linear-gradient(to_bottom,black,transparent_82%)]"></div>
-          <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,transparent_30%,rgba(10,10,10,0.94)_78%)]"></div>
-          <div class="absolute inset-x-0 top-0 h-px bg-white/20"></div>
-        </div>
+<body class="relative flex items-center justify-center min-h-screen p-4 sm:p-8">
 
-        <!-- Digital Rain Canvas (Layer 5) -->
-        <canvas id="matrixCanvas" aria-hidden="true"></canvas>
-
-        <!-- Custom Interactive Mouse Pointer -->
-        <div id="custom-cursor" class="pointer-events-none fixed left-0 top-0 z-[100] hidden mix-blend-difference md:block transition-transform duration-75 ease-out">
-          <div id="cursor-inner" class="-translate-x-1/2 -translate-y-1/2 rounded-full border border-white bg-white/10 transition-all duration-200" style="width: 42px; height: 42px; opacity: 1;"></div>
-        </div>
-
-        <!-- Scroll Progress Bar -->
-        <div id="progress-bar" class="fixed inset-x-0 top-0 z-[60] h-px origin-left bg-mist" style="transform: scaleX(0);"></div>
-
-        <!-- Navigation Header -->
-        <header class="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4 sm:px-6">
-          <nav class="flex w-full max-w-6xl items-center justify-between border px-4 py-3 transition-all duration-300 sm:px-5 border-white/15 bg-ink/85 shadow-[0_12px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl">
-            <a href="index.html" class="group flex items-center gap-3 font-mono text-xs font-semibold uppercase tracking-[0.14em]">
-              <span class="grid h-8 w-8 place-items-center border border-white/30 text-mist transition-colors group-hover:bg-mist group-hover:text-ink">R</span>
-              <span class="text-mist">lawrencebauda.com</span>
-            </a>
-            <div class="hidden items-center gap-7 md:flex">
-              <a href="index.html#work" class="font-mono text-xs uppercase tracking-[0.14em] text-mist/55 transition-colors hover:text-mist">Work</a>
-              <a href="index.html#about" class="font-mono text-xs uppercase tracking-[0.14em] text-mist/55 transition-colors hover:text-mist">About</a>
-              <a href="index.html#experience" class="font-mono text-xs uppercase tracking-[0.14em] text-mist/55 transition-colors hover:text-mist">Experience</a>
-              <a href="index.html#contact" class="font-mono text-xs uppercase tracking-[0.14em] text-mist/55 transition-colors hover:text-mist">Contact</a>
-            </div>
-            <div class="flex items-center gap-2">
-              <a href="https://app.lawrencebauda.com/login" data-login class="hidden border border-mist bg-mist px-4 py-2 font-mono text-xs font-semibold uppercase tracking-[0.12em] text-ink transition-colors hover:bg-transparent hover:text-mist md:inline-block">LOGIN</a>
-              <button type="button" id="mobile-menu-toggle" aria-label="Toggle menu" class="grid h-9 w-9 place-items-center border border-white/25 text-mist md:hidden">
-                <div class="space-y-1.5">
-                  <span class="block h-px w-4 bg-current"></span>
-                  <span class="block h-px w-4 bg-current"></span>
-                  <span class="block h-px w-4 bg-current"></span>
-                </div>
-              </button>
-            </div>
-          </nav>
-        </header>
-
-        <!-- Mobile Navigation Menu Overlay -->
-        <div id="mobile-menu" class="fixed inset-0 z-40 hidden bg-ink/95 px-6 pt-28 backdrop-blur-xl md:hidden">
-          <div class="flex flex-col gap-6 font-mono text-lg uppercase tracking-[0.14em]">
-            <a href="index.html#work" class="mobile-nav-link text-mist/70 hover:text-mist">Work</a>
-            <a href="index.html#about" class="mobile-nav-link text-mist/70 hover:text-mist">About</a>
-            <a href="index.html#experience" class="mobile-nav-link text-mist/70 hover:text-mist">Experience</a>
-            <a href="index.html#contact" class="mobile-nav-link text-mist/70 hover:text-mist">Contact</a>
-            <a href="https://app.lawrencebauda.com/login" data-login class="mt-4 border border-mist bg-mist py-3 text-center text-xs font-semibold uppercase tracking-[0.12em] text-ink">LOGIN</a>
-          </div>
-        </div>
-
-        <!-- Main Content (Layer 10: Centered Video Player) -->
-        <main class="relative z-10 flex min-h-[calc(100vh-140px)] flex-1 items-center justify-center px-4 pb-16 pt-28 sm:px-6">
-          <div class="w-full max-w-5xl">
-            <!-- Glassmorphic Container -->
-            <div class="border border-white/15 bg-ink/85 p-4 sm:p-8 backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
-              
-              <!-- Video Player Header Bar -->
-              <div class="mb-5 flex items-center justify-between border-b border-white/15 pb-4 font-mono text-[11px] uppercase tracking-[0.18em] text-mist/45">
-                <span class="flex items-center gap-2 text-mist/70">
-                  <span class="h-1.5 w-1.5 rounded-full bg-mist animate-ping"></span>
-                  GitHub Stream Player
-                </span>
-                <span>callmerenzu / 2026</span>
-              </div>
-
-              <!-- Video Frame with explicit 16:9 aspect ratio fallback -->
-              <div class="video-wrapper relative overflow-hidden border border-white/15 bg-black">
-                <video 
-                  controls 
-                  autoplay 
-                  playsinline
-                  preload="metadata"
-                  class="h-full w-full object-contain"
-                >
-                  <!-- Replace src with your direct raw GitHub MP4 link -->
-                  <!-- Example: https://raw.githubusercontent.com/username/repository/main/video.mp4 -->
-                  <source src="https://raw.githubusercontent.com/username/repository/main/video.mp4" type="video/mp4">
-                  Your browser does not support the video tag.
-                </video>
-              </div>
-
-              <!-- Player Subtitle Footer -->
-              <div class="mt-5 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.16em] text-mist/40">
-                <span>MP4 Media Stream</span>
-                <span>ZE Documentation</span>
-              </div>
-
-            </div>
-          </div>
-        </main>
-
-        <!-- Footer -->
-        <footer class="relative z-10 border-t border-white/15 px-6 py-8">
-          <div class="mx-auto flex max-w-6xl flex-col items-start justify-between gap-5 sm:flex-row sm:items-center">
-            <div class="flex items-center gap-3 font-mono text-xs font-semibold uppercase tracking-[0.14em] text-mist/70">
-              <span class="grid h-7 w-7 place-items-center border border-white/30 text-mist">R</span>lawrencebauda.com
-            </div>
-            <p class="font-mono text-[10px] uppercase tracking-[0.12em] text-mist/30">
-              © 2026 Lawrence Bauda.
-            </p>
-            <a href="#" class="font-mono text-[10px] uppercase tracking-[0.14em] text-mist/45 transition-colors hover:text-mist">Back to top ↑</a>
-          </div>
-        </footer>
-      </div>
+    <!-- Layer 0: Background Grid -->
+    <div class="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-ink">
+      <div class="grid-bg absolute inset-0 opacity-35 [mask-image:linear-gradient(to_bottom,black,transparent_82%)]"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,rgba(10,10,10,0.95)_80%)]"></div>
+      <div class="absolute inset-x-0 top-0 h-px bg-white/20"></div>
     </div>
 
-    <!-- UI Motion & Interactive Cursor Script -->
+    <!-- Layer 5: Digital Matrix Rain Canvas -->
+    <canvas id="matrixCanvas" aria-hidden="true"></canvas>
+
+    <!-- Layer 100: Custom Interactive Pointer -->
+    <div id="custom-cursor" class="pointer-events-none fixed left-0 top-0 z-[100] hidden mix-blend-difference md:block transition-transform duration-75 ease-out">
+      <div id="cursor-inner" class="-translate-x-1/2 -translate-y-1/2 rounded-full border border-white bg-white/10 transition-all duration-200" style="width: 42px; height: 42px;"></div>
+    </div>
+
+    <!-- Layer 10: Centered Video Player Container -->
+    <main class="relative z-10 w-full max-w-4xl border border-white/15 bg-ink/85 p-4 sm:p-6 backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
+      
+      <!-- Minimal Header Bar -->
+      <div class="mb-4 flex items-center justify-between border-b border-white/15 pb-3 font-mono text-[11px] uppercase tracking-[0.16em] text-mist/50">
+        <span class="flex items-center gap-2">
+          <span class="h-1.5 w-1.5 rounded-full bg-mist animate-ping"></span>
+          Media Player
+        </span>
+        <span>GitHub Stream</span>
+      </div>
+
+      <!-- Video Element -->
+      <div class="relative aspect-video w-full overflow-hidden bg-black border border-white/10">
+        <video 
+          controls 
+          autoplay 
+          playsinline
+          preload="metadata" 
+          class="h-full w-full object-contain"
+        >
+          <!-- Replace this source URL with your direct raw MP4 GitHub file URL -->
+          <!-- Example GitHub raw format: https://raw.githubusercontent.com/username/repository/main/video.mp4 -->
+          <source src="https://raw.githubusercontent.com/username/repository/main/video.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+
+    </main>
+
+    <!-- Cursor Script -->
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         const cursor = document.getElementById('custom-cursor');
@@ -281,7 +120,7 @@
             cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
           });
 
-          document.querySelectorAll('a, button, video, [data-cursor="true"]').forEach((el) => {
+          document.querySelectorAll('video, button, a').forEach((el) => {
             el.addEventListener('mouseenter', () => {
               if (cursorInner) {
                 cursorInner.style.width = '64px';
@@ -298,41 +137,10 @@
             });
           });
         }
-
-        const progressBar = document.getElementById('progress-bar');
-        window.addEventListener('scroll', () => {
-          if (progressBar) {
-            const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
-            const progress = totalScroll > 0 ? window.scrollY / totalScroll : 0;
-            progressBar.style.transform = `scaleX(${progress})`;
-          }
-        });
-
-        const menuBtn = document.getElementById('mobile-menu-toggle');
-        const mobileMenu = document.getElementById('mobile-menu');
-        if (menuBtn && mobileMenu) {
-          menuBtn.addEventListener('click', () => {
-            const isHidden = mobileMenu.classList.contains('hidden');
-            if (isHidden) {
-              mobileMenu.classList.remove('hidden');
-              menuBtn.setAttribute('aria-expanded', 'true');
-            } else {
-              mobileMenu.classList.add('hidden');
-              menuBtn.setAttribute('aria-expanded', 'false');
-            }
-          });
-
-          document.querySelectorAll('.mobile-nav-link').forEach((link) => {
-            link.addEventListener('click', () => {
-              mobileMenu.classList.add('hidden');
-              menuBtn.setAttribute('aria-expanded', 'false');
-            });
-          });
-        }
       });
     </script>
-    <div id="login-status" role="status" aria-live="polite"></div>
 
+    <!-- Matrix Rain Script -->
     <script id="digital-rain">
     (function () {
       'use strict';
@@ -353,7 +161,7 @@
       var neckStr = 'rgb(' + mix(base, 0.35).join(',') + ')';
       var headStr = 'rgb(' + mix(base, 0.85).join(',') + ')';
 
-      var KANA = [], DIGITS = '0123456789'.split(''), SYMBOLS = ':.=*+-<>¦|'.split('');
+      var KANA = [], DIGITS = '0123456789'.split(''), SYMBOLS = ':.=*+-<>\u00a6|'.split('');
       for (var code = 0xFF66; code <= 0xFF9D; code++) KANA.push(String.fromCharCode(code));
       function glyph() {
         var r = Math.random();
@@ -448,70 +256,5 @@
       window.requestAnimationFrame(frame);
     })();
     </script>
-
-    <script id="login-launcher">
-    (function () {
-      'use strict';
-      var SERVER_URL = 'https://app.lawrencebauda.com';
-      var WAKE_URL = 'https://wake.lawrencebauda.com/start';
-      var LAUNCH_URL = 'zedserver://start';
-      var CHECK_TIMEOUT_MS = 2500, WAIT_MS = 90000, POLL_MS = 2500;
-
-      var box = document.getElementById('login-status');
-      var buttons = document.querySelectorAll('[data-login]');
-      var busy = false, hideTimer = 0;
-      buttons.forEach(function (b) { b.setAttribute('href', SERVER_URL + '/login'); b.addEventListener('click', onLogin); });
-
-      function show(html, kind, keep) {
-        clearTimeout(hideTimer);
-        box.className = 'show' + (kind ? ' ' + kind : '');
-        box.innerHTML = html;
-        if (!keep) hideTimer = setTimeout(function () { box.className = ''; }, 6000);
-      }
-      function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
-
-      function isUp(timeout) {
-        return new Promise(function (resolve) {
-          var img = new Image(), done = false;
-          function end(v) { if (!done) { done = true; clearTimeout(t); img.onload = img.onerror = null; resolve(v); } }
-          var t = setTimeout(function () { end(false); }, timeout);
-          img.onload = function () { end(true); };
-          img.onerror = function () { end(false); };
-          img.src = SERVER_URL + '/static/favicon.ico?_=' + Date.now();
-        });
-      }
-      function protocolLaunch() {
-        var a = document.createElement('a');
-        a.href = LAUNCH_URL; a.style.display = 'none';
-        document.body.appendChild(a); a.click(); a.remove();
-      }
-      function launch() {
-        if (WAKE_URL) {
-          try { fetch(WAKE_URL, { mode: 'no-cors', cache: 'no-store' }).catch(function () {}); } catch (e) {}
-        } else {
-          protocolLaunch();
-        }
-      }
-      function go() { window.location.href = SERVER_URL + '/login'; }
-
-      async function onLogin(e) {
-        e.preventDefault();
-        if (busy) return;
-        busy = true;
-        show('Checking server…', '', true);
-        if (await isUp(CHECK_TIMEOUT_MS)) { go(); return; }
-
-        show('Server is offline.', '', true);
-        launch();
-        var deadline = Date.now() + WAIT_MS;
-        while (Date.now() < deadline) {
-          await sleep(POLL_MS);
-          if (await isUp(CHECK_TIMEOUT_MS)) { show('Server is up. Redirecting…', '', true); go(); return; }
-        }
-        show('Couldn’t reach the server.', 'error');
-        busy = false;
-      }
-    })();
-    </script>
-  </body>
+</body>
 </html>
