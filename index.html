@@ -121,6 +121,73 @@
       #login-status.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
       #login-status a { color: #fff; text-decoration: underline; }
       #login-status.error { border-color: #ff6b6b; }
+
+      /* ---------- Access gate modal ---------- */
+      #custom-cursor { z-index: 210 !important; }
+      #pw-modal {
+        position: fixed; inset: 0; z-index: 200;
+        display: flex; align-items: center; justify-content: center; padding: 16px;
+        background: rgba(10,10,10,.78); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        opacity: 0; visibility: hidden; transition: opacity .2s, visibility .2s;
+      }
+      #pw-modal.open { opacity: 1; visibility: visible; }
+      #pw-box {
+        position: relative; width: min(94vw, 420px); background: #0a0a0a;
+        border: 1px solid rgba(255,255,255,.3); box-shadow: 0 24px 80px rgba(0,0,0,.7);
+        font-family: 'JetBrains Mono', monospace; color: #f4f4f0;
+        transform: translateY(12px); transition: transform .25s;
+      }
+      #pw-modal.open #pw-box { transform: translateY(0); }
+      #pw-box::before {
+        content: ""; position: absolute; inset: 0; pointer-events: none;
+        background-image: linear-gradient(to right, rgba(255,255,255,.045) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,.045) 1px, transparent 1px);
+        background-size: 36px 36px;
+      }
+      #pw-box::after { content: ""; position: absolute; inset: 0 0 auto 0; height: 1px; background: rgba(255,255,255,.35); }
+      .pw-head {
+        position: relative; display: flex; align-items: center; justify-content: space-between;
+        padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,.15);
+        font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+      }
+      .pw-head .dim { color: rgba(244,244,240,.5); }
+      .pw-x {
+        width: 28px; height: 28px; display: grid; place-items: center; background: transparent;
+        color: #f4f4f0; border: 1px solid rgba(255,255,255,.25); font: inherit; font-size: 13px; line-height: 1;
+        transition: background .15s, color .15s;
+      }
+      .pw-x:hover { background: #f4f4f0; color: #0a0a0a; }
+      .pw-body { position: relative; padding: 24px 16px 16px; }
+      .pw-title { margin: 0 0 6px; font-family: 'Inter', sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -.02em; }
+      .pw-sub { margin: 0 0 20px; font-size: 11px; line-height: 1.6; letter-spacing: .06em; color: rgba(244,244,240,.55); text-transform: uppercase; }
+      .pw-field { position: relative; display: flex; align-items: center; border: 1px solid rgba(255,255,255,.3); background: rgba(255,255,255,.03); transition: border-color .15s; }
+      .pw-field:focus-within { border-color: #f4f4f0; }
+      .pw-field span.pre { padding: 0 0 0 12px; color: rgba(244,244,240,.5); font-size: 13px; }
+      #pw-input {
+        flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; color: #f4f4f0;
+        padding: 13px 12px 13px 8px; font: 500 14px 'JetBrains Mono', monospace; letter-spacing: .18em;
+      }
+      #pw-input::placeholder { color: rgba(244,244,240,.3); letter-spacing: .1em; }
+      #pw-toggle {
+        background: transparent; border: 0; border-left: 1px solid rgba(255,255,255,.15); color: rgba(244,244,240,.6);
+        padding: 0 12px; align-self: stretch; font: 600 10px 'JetBrains Mono', monospace; letter-spacing: .12em; text-transform: uppercase;
+      }
+      #pw-toggle:hover { color: #f4f4f0; }
+      #pw-msg { min-height: 18px; margin: 10px 0 0; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: rgba(244,244,240,.55); }
+      #pw-msg.err { color: #ff6b6b; }
+      #pw-field-wrap.shake { animation: pwshake .38s; }
+      #pw-field-wrap.shake .pw-field { border-color: #ff6b6b; }
+      @keyframes pwshake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-7px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(3px)} }
+      .pw-actions { display: flex; gap: 8px; margin-top: 18px; }
+      .pw-btn {
+        flex: 1; padding: 12px 14px; font: 600 12px 'JetBrains Mono', monospace; letter-spacing: .12em; text-transform: uppercase;
+        border: 1px solid #f4f4f0; transition: background .15s, color .15s;
+      }
+      .pw-btn.primary { background: #f4f4f0; color: #0a0a0a; }
+      .pw-btn.primary:hover:not(:disabled) { background: transparent; color: #f4f4f0; }
+      .pw-btn.ghost { background: transparent; color: #f4f4f0; border-color: rgba(255,255,255,.3); }
+      .pw-btn.ghost:hover { border-color: #f4f4f0; }
+      .pw-btn:disabled { opacity: .5; }
+      @media (prefers-reduced-motion: reduce) { #pw-modal, #pw-box { transition: none; } #pw-field-wrap.shake { animation: none; } }
       .animate-marquee { animation: marquee 36s linear infinite; }
       .grid-bg {
         background-image: linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
@@ -736,6 +803,31 @@
         }
       });
     </script>
+    <div id="pw-modal" role="dialog" aria-modal="true" aria-labelledby="pw-title" aria-hidden="true">
+      <div id="pw-box">
+        <div class="pw-head">
+          <span>// Restricted <span class="dim">/ server</span></span>
+          <button type="button" class="pw-x" id="pw-close" aria-label="Close">&#10005;</button>
+        </div>
+        <div class="pw-body">
+          <h2 class="pw-title" id="pw-title">Access required</h2>
+          <p class="pw-sub">Enter the passphrase to start the server.</p>
+          <div id="pw-field-wrap">
+            <div class="pw-field">
+              <span class="pre">&gt;</span>
+              <input id="pw-input" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="passphrase" aria-label="Passphrase">
+              <button type="button" id="pw-toggle" aria-label="Show passphrase">Show</button>
+            </div>
+          </div>
+          <p id="pw-msg" role="alert"></p>
+          <div class="pw-actions">
+            <button type="button" class="pw-btn ghost" id="pw-cancel">Cancel</button>
+            <button type="button" class="pw-btn primary" id="pw-submit">Unlock</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div id="login-status" role="status" aria-live="polite"></div>
 
     <script id="digital-rain">
@@ -899,10 +991,83 @@
       }
       function go() { window.location.href = SERVER_URL + '/login'; }
 
+      /* ---- Access gate ---- */
+      var PASS_HASH = 'e1e9750c6776098f71a1e14a321c9567ff460284eba141c2c4f2b1bb2a04b472'; // SHA-256
+      var modal = document.getElementById('pw-modal');
+      var input = document.getElementById('pw-input');
+      var msg = document.getElementById('pw-msg');
+      var wrap = document.getElementById('pw-field-wrap');
+      var submitBtn = document.getElementById('pw-submit');
+      var toggleBtn = document.getElementById('pw-toggle');
+      var lastFocus = null, gateResolve = null;
+
+      function sha256(str) {
+        return crypto.subtle.digest('SHA-256', new TextEncoder().encode(str)).then(function (buf) {
+          return Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
+        });
+      }
+      function setMsg(t, err) { msg.textContent = t; msg.className = err ? 'err' : ''; }
+      function openGate() {
+        return new Promise(function (resolve) {
+          gateResolve = resolve;
+          lastFocus = document.activeElement;
+          input.value = ''; input.type = 'password'; toggleBtn.textContent = 'Show';
+          setMsg('', false);
+          modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false');
+          setTimeout(function () { input.focus(); }, 60);
+        });
+      }
+      function closeGate(ok) {
+        modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true');
+        input.value = '';
+        if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch (e) {} }
+        var r = gateResolve; gateResolve = null;
+        if (r) r(ok);
+      }
+      async function trySubmit() {
+        if (submitBtn.disabled) return;
+        var val = input.value;
+        if (!val) { setMsg('Passphrase required.', true); return; }
+        submitBtn.disabled = true;
+        var ok = false;
+        try { ok = (await sha256(val)) === PASS_HASH; }
+        catch (e) { setMsg('Secure context required.', true); submitBtn.disabled = false; return; }
+        submitBtn.disabled = false;
+        if (ok) { setMsg('Access granted.', false); setTimeout(function () { closeGate(true); }, 250); }
+        else {
+          setMsg('Access denied.', true);
+          wrap.classList.remove('shake'); void wrap.offsetWidth; wrap.classList.add('shake');
+          input.select();
+        }
+      }
+      submitBtn.addEventListener('click', trySubmit);
+      document.getElementById('pw-cancel').addEventListener('click', function () { closeGate(false); });
+      document.getElementById('pw-close').addEventListener('click', function () { closeGate(false); });
+      modal.addEventListener('mousedown', function (e) { if (e.target === modal) closeGate(false); });
+      toggleBtn.addEventListener('click', function () {
+        var show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        toggleBtn.textContent = show ? 'Hide' : 'Show';
+        input.focus();
+      });
+      input.addEventListener('input', function () { if (msg.className) setMsg('', false); });
+      document.addEventListener('keydown', function (e) {
+        if (!modal.classList.contains('open')) return;
+        if (e.key === 'Escape') { e.preventDefault(); closeGate(false); }
+        else if (e.key === 'Enter' && document.activeElement === input) { e.preventDefault(); trySubmit(); }
+        else if (e.key === 'Tab') {
+          var f = Array.prototype.filter.call(modal.querySelectorAll('button, input'), function (el) { return !el.disabled; });
+          var first = f[0], last = f[f.length - 1];
+          if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
+      });
+
       async function onLogin(e) {
         e.preventDefault();
         if (busy) return;
         busy = true;
+        if (!(await openGate())) { busy = false; return; }
         show('Checking server…', '', true);
         if (await isUp(CHECK_TIMEOUT_MS)) { go(); return; }
 
