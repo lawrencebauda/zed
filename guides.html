@@ -70,7 +70,7 @@
     
     <link rel="stylesheet" href="/style.css">
 
-    <!-- Tailwind CSS Engine Engine -->
+    <!-- Tailwind CSS Engine -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -129,7 +129,7 @@
       ::-webkit-scrollbar-thumb:hover { background: #5a5a55; }
       ::selection { background: transparent; color: inherit; }
 
-      /* Matrix Canvas Layering (z-5 above grid background z-0, below UI content z-10) */
+      /* Matrix Canvas Layering (z-5 above grid z-0, below UI content z-10) */
       #matrixCanvas {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         height: 100lvh;
@@ -167,9 +167,9 @@
         <!-- Digital Rain Canvas (Layer 5) -->
         <canvas id="matrixCanvas" aria-hidden="true"></canvas>
 
-        <!-- Custom Interactive Mouse Pointer -->
-        <div id="custom-cursor" class="pointer-events-none fixed left-0 top-0 z-[100] hidden mix-blend-difference md:block transition-transform duration-75 ease-out">
-          <div id="cursor-inner" class="-translate-x-1/2 -translate-y-1/2 rounded-full border border-white bg-white/10 transition-all duration-200" style="width: 42px; height: 42px; opacity: 1;"></div>
+        <!-- Calibrated Mouse Pointer (Instant 1:1 hardware precision lock) -->
+        <div id="custom-cursor" class="pointer-events-none fixed left-0 top-0 z-[100] hidden mix-blend-difference md:block">
+          <div id="cursor-inner" class="-translate-x-1/2 -translate-y-1/2 rounded-full border border-white bg-white/10 transition-all duration-150 ease-out" style="width: 42px; height: 42px; opacity: 1;"></div>
         </div>
 
         <!-- Scroll Progress Bar -->
@@ -218,18 +218,35 @@
             <!-- Glassmorphic Video Card Container -->
             <div class="border border-white/15 bg-ink/85 p-4 sm:p-6 backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
               
-              <!-- Video Player Header Bar -->
-              <div class="mb-4 flex items-center justify-between border-b border-white/15 pb-3 font-mono text-[11px] uppercase tracking-[0.16em] text-mist/50">
+              <!-- Video Player Header Bar with Dropdown Selector -->
+              <div class="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-white/15 pb-3 font-mono text-[11px] uppercase tracking-[0.16em] text-mist/50">
                 <span class="flex items-center gap-2">
                   <span class="h-1.5 w-1.5 rounded-full bg-mist animate-ping"></span>
                   Media Player
                 </span>
-                <span>GitHub Stream</span>
+
+                <!-- Video Selector Dropdown -->
+                <div class="flex items-center gap-2">
+                  <label for="videoSelect" class="hidden text-[10px] text-mist/40 sm:inline-block">Select Video:</label>
+                  <select 
+                    id="videoSelect" 
+                    data-cursor="true"
+                    class="cursor-pointer border border-white/20 bg-ink px-3 py-1 font-mono text-xs uppercase tracking-wider text-mist outline-none transition-colors hover:border-white/50 focus:border-mist"
+                  >
+                    <!-- =================================================================== -->
+                    <!-- EASY CONFIGURATION: ADD OR EDIT YOUR GITHUB RAW MP4 LINKS BELOW     -->
+                    <!-- =================================================================== -->
+                    <option value="https://raw.githubusercontent.com/username/repository/main/video.mp4">Video 01 — Main Stream</option>
+                    <option value="https://raw.githubusercontent.com/username/repository/main/video2.mp4">Video 02 — Feature Demo</option>
+                    <option value="https://raw.githubusercontent.com/username/repository/main/video3.mp4">Video 03 — Clip Showcase</option>
+                  </select>
+                </div>
               </div>
 
               <!-- Video Container -->
               <div class="relative aspect-video max-h-[65vh] w-full overflow-hidden bg-black border border-white/10 flex items-center justify-center">
                 <video 
+                  id="mainVideo"
                   controls 
                   autoplay 
                   playsinline
@@ -239,8 +256,7 @@
                   preload="metadata" 
                   class="h-full w-full max-h-[65vh] object-contain"
                 >
-                  <!-- Replace src with your direct raw GitHub MP4 link -->
-                  <source src="https://raw.githubusercontent.com/username/repository/main/video.mp4" type="video/mp4">
+                  <source id="videoSource" src="https://raw.githubusercontent.com/username/repository/main/video.mp4" type="video/mp4">
                   Your browser does not support the video tag.
                 </video>
               </div>
@@ -270,59 +286,51 @@
       </div>
     </div>
 
-    <!-- Security & Protection Script (Disable Right Click, DevTools Shortcuts, Drag/Drop) -->
+    <!-- Security Script (Disable Right-Click & DevTools Shortcuts) -->
     <script>
       (function() {
         'use strict';
 
-        // 1. Disable Right-Click Context Menu
+        // Disable Right Click Context Menu
         document.addEventListener('contextmenu', (e) => {
           e.preventDefault();
           return false;
         });
 
-        // 2. Block Keyboard Shortcuts for Developer Tools and Source Viewing
+        // Disable Inspect Shortcuts
         document.addEventListener('keydown', (e) => {
           const key = e.key ? e.key.toUpperCase() : '';
           const keyCode = e.keyCode || e.which;
 
-          // F12
           if (key === 'F12' || keyCode === 123) {
             e.preventDefault();
             return false;
           }
 
-          // Ctrl + Shift + I (Inspect Element)
-          // Ctrl + Shift + J (Console)
-          // Ctrl + Shift + C (Inspect Mode)
-          // Ctrl + Shift + K (Firefox DevTools)
           if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C', 'K'].includes(key)) {
             e.preventDefault();
             return false;
           }
 
-          // Ctrl + U (View Source)
-          // Ctrl + S (Save Page)
           if (e.ctrlKey && ['U', 'S'].includes(key)) {
             e.preventDefault();
             return false;
           }
 
-          // Cmd + Option + I / J / C / U / S (macOS DevTools & View Source)
           if (e.metaKey && e.altKey && ['I', 'J', 'C', 'U', 'S'].includes(key)) {
             e.preventDefault();
             return false;
           }
         });
 
-        // 3. Disable Dragging Media & Selection
         document.addEventListener('dragstart', (e) => e.preventDefault());
       })();
     </script>
 
-    <!-- UI Motion & Interactive Cursor Script -->
+    <!-- UI Motion, Calibrated Cursor & Video Selector Script -->
     <script>
       document.addEventListener('DOMContentLoaded', () => {
+        // 1. Calibrated Custom Pointer (0 Lag Hardware Precision Lock)
         const cursor = document.getElementById('custom-cursor');
         const cursorInner = document.getElementById('cursor-inner');
 
@@ -331,7 +339,7 @@
             cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
           });
 
-          document.querySelectorAll('a, button, video, [data-cursor="true"]').forEach((el) => {
+          document.querySelectorAll('a, button, video, select, [data-cursor="true"]').forEach((el) => {
             el.addEventListener('mouseenter', () => {
               if (cursorInner) {
                 cursorInner.style.width = '64px';
@@ -349,6 +357,20 @@
           });
         }
 
+        // 2. Video Selector Controller
+        const videoSelect = document.getElementById('videoSelect');
+        const mainVideo = document.getElementById('mainVideo');
+
+        if (videoSelect && mainVideo) {
+          videoSelect.addEventListener('change', (e) => {
+            const newSrc = e.target.value;
+            mainVideo.src = newSrc;
+            mainVideo.load();
+            mainVideo.play().catch(() => {});
+          });
+        }
+
+        // 3. Scroll Progress Bar
         const progressBar = document.getElementById('progress-bar');
         window.addEventListener('scroll', () => {
           if (progressBar) {
@@ -358,6 +380,7 @@
           }
         });
 
+        // 4. Mobile Menu Toggle
         const menuBtn = document.getElementById('mobile-menu-toggle');
         const mobileMenu = document.getElementById('mobile-menu');
         if (menuBtn && mobileMenu) {
@@ -381,8 +404,10 @@
         }
       });
     </script>
+
     <div id="login-status" role="status" aria-live="polite"></div>
 
+    <!-- Matrix Rain Script -->
     <script id="digital-rain">
     (function () {
       'use strict';
@@ -499,6 +524,7 @@
     })();
     </script>
 
+    <!-- Login Launcher Script -->
     <script id="login-launcher">
     (function () {
       'use strict';
