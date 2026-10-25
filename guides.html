@@ -70,7 +70,7 @@
     
     <link rel="stylesheet" href="/style.css">
 
-    <!-- Tailwind CSS Engine -->
+    <!-- Tailwind CSS Engine Engine -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -107,7 +107,13 @@
       .font-sans { font-family: 'Inter', sans-serif; }
       .font-mono { font-family: 'JetBrains Mono', monospace; }
 
-      * { box-sizing: border-box; }
+      * { 
+        box-sizing: border-box; 
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
       html { scroll-behavior: smooth; }
       body {
         margin: 0;
@@ -121,7 +127,7 @@
       ::-webkit-scrollbar-track { background: #0a0a0a; }
       ::-webkit-scrollbar-thumb { background: #3a3a37; border: 2px solid #0a0a0a; }
       ::-webkit-scrollbar-thumb:hover { background: #5a5a55; }
-      ::selection { background: #f4f4f0; color: #0a0a0a; }
+      ::selection { background: transparent; color: inherit; }
 
       /* Matrix Canvas Layering (z-5 above grid background z-0, below UI content z-10) */
       #matrixCanvas {
@@ -206,7 +212,7 @@
           </div>
         </div>
 
-        <!-- Main Content Area (Safely buffered under top header: pt-24 pb-12) -->
+        <!-- Main Content Area -->
         <main class="relative z-10 flex flex-1 items-center justify-center px-4 pb-12 pt-24 sm:px-6">
           <div class="my-auto w-full max-w-4xl">
             <!-- Glassmorphic Video Card Container -->
@@ -221,17 +227,19 @@
                 <span>GitHub Stream</span>
               </div>
 
-              <!-- Video Container (Ratio locked & constrained to 65vh max so controls never overflow screen) -->
+              <!-- Video Container -->
               <div class="relative aspect-video max-h-[65vh] w-full overflow-hidden bg-black border border-white/10 flex items-center justify-center">
                 <video 
                   controls 
                   autoplay 
                   playsinline
+                  controlsList="nodownload noplaybackrate"
+                  disablePictureInPicture
+                  oncontextmenu="return false;"
                   preload="metadata" 
                   class="h-full w-full max-h-[65vh] object-contain"
                 >
                   <!-- Replace src with your direct raw GitHub MP4 link -->
-                  <!-- Example: https://raw.githubusercontent.com/username/repository/main/video.mp4 -->
                   <source src="https://raw.githubusercontent.com/username/repository/main/video.mp4" type="video/mp4">
                   Your browser does not support the video tag.
                 </video>
@@ -261,6 +269,56 @@
         </footer>
       </div>
     </div>
+
+    <!-- Security & Protection Script (Disable Right Click, DevTools Shortcuts, Drag/Drop) -->
+    <script>
+      (function() {
+        'use strict';
+
+        // 1. Disable Right-Click Context Menu
+        document.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+          return false;
+        });
+
+        // 2. Block Keyboard Shortcuts for Developer Tools and Source Viewing
+        document.addEventListener('keydown', (e) => {
+          const key = e.key ? e.key.toUpperCase() : '';
+          const keyCode = e.keyCode || e.which;
+
+          // F12
+          if (key === 'F12' || keyCode === 123) {
+            e.preventDefault();
+            return false;
+          }
+
+          // Ctrl + Shift + I (Inspect Element)
+          // Ctrl + Shift + J (Console)
+          // Ctrl + Shift + C (Inspect Mode)
+          // Ctrl + Shift + K (Firefox DevTools)
+          if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C', 'K'].includes(key)) {
+            e.preventDefault();
+            return false;
+          }
+
+          // Ctrl + U (View Source)
+          // Ctrl + S (Save Page)
+          if (e.ctrlKey && ['U', 'S'].includes(key)) {
+            e.preventDefault();
+            return false;
+          }
+
+          // Cmd + Option + I / J / C / U / S (macOS DevTools & View Source)
+          if (e.metaKey && e.altKey && ['I', 'J', 'C', 'U', 'S'].includes(key)) {
+            e.preventDefault();
+            return false;
+          }
+        });
+
+        // 3. Disable Dragging Media & Selection
+        document.addEventListener('dragstart', (e) => e.preventDefault());
+      })();
+    </script>
 
     <!-- UI Motion & Interactive Cursor Script -->
     <script>
