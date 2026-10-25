@@ -167,7 +167,7 @@
         <!-- Digital Rain Canvas (Layer 5) -->
         <canvas id="matrixCanvas" aria-hidden="true"></canvas>
 
-        <!-- Calibrated Mouse Pointer (Instant 1:1 hardware precision lock) -->
+        <!-- Calibrated Mouse Pointer -->
         <div id="custom-cursor" class="pointer-events-none fixed left-0 top-0 z-[100] hidden mix-blend-difference md:block">
           <div id="cursor-inner" class="-translate-x-1/2 -translate-y-1/2 rounded-full border border-white bg-white/10 transition-all duration-150 ease-out" style="width: 42px; height: 42px; opacity: 1;"></div>
         </div>
@@ -175,7 +175,7 @@
         <!-- Scroll Progress Bar -->
         <div id="progress-bar" class="fixed inset-x-0 top-0 z-[60] h-px origin-left bg-mist" style="transform: scaleX(0);"></div>
 
-        <!-- Navigation Header (Fixed at top, z-50) -->
+        <!-- Navigation Header -->
         <header class="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4 sm:px-6">
           <nav class="flex w-full max-w-6xl items-center justify-between border px-4 py-3 transition-all duration-300 sm:px-5 border-white/15 bg-ink/85 shadow-[0_12px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl">
             <a href="index.html" class="group flex items-center gap-3 font-mono text-xs font-semibold uppercase tracking-[0.14em]">
@@ -215,36 +215,39 @@
         <!-- Main Content Area -->
         <main class="relative z-10 flex flex-1 items-center justify-center px-4 pb-12 pt-24 sm:px-6">
           <div class="my-auto w-full max-w-4xl">
-            <!-- Glassmorphic Video Card Container -->
+            <!-- Glassmorphic Media Card Container -->
             <div class="border border-white/15 bg-ink/85 p-4 sm:p-6 backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
               
-              <!-- Video Player Header Bar with Dropdown Selector -->
+              <!-- Header Bar with Dropdown Selector -->
               <div class="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-white/15 pb-3 font-mono text-[11px] uppercase tracking-[0.16em] text-mist/50">
                 <span class="flex items-center gap-2">
                   <span class="h-1.5 w-1.5 rounded-full bg-mist animate-ping"></span>
-                  Media Player
+                  Media Display
                 </span>
 
-                <!-- Video Selector Dropdown -->
+                <!-- Media Selector Dropdown -->
                 <div class="flex items-center gap-2">
-                  <label for="videoSelect" class="hidden text-[10px] text-mist/40 sm:inline-block">Select Video:</label>
+                  <label for="mediaSelect" class="hidden text-[10px] text-mist/40 sm:inline-block">Select Media:</label>
                   <select 
-                    id="videoSelect" 
+                    id="mediaSelect" 
                     data-cursor="true"
                     class="cursor-pointer border border-white/20 bg-ink px-3 py-1 font-mono text-xs uppercase tracking-wider text-mist outline-none transition-colors hover:border-white/50 focus:border-mist"
                   >
-                    <!-- =================================================================== -->
-                    <!-- EASY CONFIGURATION: ADD OR EDIT YOUR GITHUB RAW MP4 LINKS BELOW     -->
-                    <!-- =================================================================== -->
-                    <option value="https://raw.githubusercontent.com/username/repository/main/video.mp4">Video 01 — Main Stream</option>
-                    <option value="https://raw.githubusercontent.com/username/repository/main/video2.mp4">Video 02 — Feature Demo</option>
-                    <option value="https://raw.githubusercontent.com/username/repository/main/video3.mp4">Video 03 — Clip Showcase</option>
+                    <!-- ============================================================================================== -->
+                    <!-- EASY CONFIGURATION: ADD OR EDIT YOUR LINKS BELOW                                                -->
+                    <!-- Set data-type="video" for MP4 links or data-type="image" for PNG/JPG/WEBP image links          -->
+                    <!-- ============================================================================================== -->
+                    <option data-type="video" value="https://raw.githubusercontent.com/username/repository/main/video.mp4">Video 01 — Main Stream</option>
+                    <option data-type="video" value="https://raw.githubusercontent.com/username/repository/main/video2.mp4">Video 02 — Feature Demo</option>
+                    <option data-type="image" value="https://raw.githubusercontent.com/username/repository/main/preview.png">Image 01 — System Preview</option>
+                    <option data-type="image" value="https://raw.githubusercontent.com/username/repository/main/diagram.png">Image 02 — Architecture Diagram</option>
                   </select>
                 </div>
               </div>
 
-              <!-- Video Container -->
+              <!-- Media Viewer Container (Supports Video & Image seamlessly) -->
               <div class="relative aspect-video max-h-[65vh] w-full overflow-hidden bg-black border border-white/10 flex items-center justify-center">
+                <!-- Video Player Element -->
                 <video 
                   id="mainVideo"
                   controls 
@@ -259,11 +262,20 @@
                   <source id="videoSource" src="https://raw.githubusercontent.com/username/repository/main/video.mp4" type="video/mp4">
                   Your browser does not support the video tag.
                 </video>
+
+                <!-- Image Viewer Element -->
+                <img 
+                  id="mainImage" 
+                  src="" 
+                  alt="Media Preview" 
+                  oncontextmenu="return false;"
+                  class="hidden h-full w-full max-h-[65vh] object-contain" 
+                />
               </div>
 
-              <!-- Player Subtitle Footer -->
+              <!-- Media Subtitle Footer -->
               <div class="mt-4 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.16em] text-mist/40">
-                <span>MP4 Media Stream</span>
+                <span id="mediaTypeLabel">MP4 Media Stream</span>
                 <span>ZE Documentation</span>
               </div>
 
@@ -327,10 +339,10 @@
       })();
     </script>
 
-    <!-- UI Motion, Calibrated Cursor & Video Selector Script -->
+    <!-- UI Motion, Cursor & Media Switcher Controller Script -->
     <script>
       document.addEventListener('DOMContentLoaded', () => {
-        // 1. Calibrated Custom Pointer (0 Lag Hardware Precision Lock)
+        // 1. Calibrated Custom Pointer
         const cursor = document.getElementById('custom-cursor');
         const cursorInner = document.getElementById('cursor-inner');
 
@@ -357,17 +369,39 @@
           });
         }
 
-        // 2. Video Selector Controller
-        const videoSelect = document.getElementById('videoSelect');
+        // 2. Dual Media Switcher (Video vs Image)
+        const mediaSelect = document.getElementById('mediaSelect');
         const mainVideo = document.getElementById('mainVideo');
+        const mainImage = document.getElementById('mainImage');
+        const mediaTypeLabel = document.getElementById('mediaTypeLabel');
 
-        if (videoSelect && mainVideo) {
-          videoSelect.addEventListener('change', (e) => {
-            const newSrc = e.target.value;
-            mainVideo.src = newSrc;
-            mainVideo.load();
-            mainVideo.play().catch(() => {});
-          });
+        if (mediaSelect && mainVideo && mainImage) {
+          function updateMediaDisplay() {
+            const selectedOpt = mediaSelect.options[mediaSelect.selectedIndex];
+            const mediaUrl = selectedOpt.value;
+            const explicitType = selectedOpt.getAttribute('data-type');
+            
+            // Auto-detect type if data-type attribute is omitted
+            const isImage = explicitType === 'image' || (explicitType !== 'video' && mediaUrl.match(/\.(jpeg|jpg|gif|png|webp|svg)$/i));
+
+            if (isImage) {
+              mainVideo.pause();
+              mainVideo.classList.add('hidden');
+              mainImage.src = mediaUrl;
+              mainImage.classList.remove('hidden');
+              if (mediaTypeLabel) mediaTypeLabel.textContent = 'IMAGE DISPLAY';
+            } else {
+              mainImage.classList.add('hidden');
+              mainVideo.src = mediaUrl;
+              mainVideo.classList.remove('hidden');
+              mainVideo.load();
+              mainVideo.play().catch(() => {});
+              if (mediaTypeLabel) mediaTypeLabel.textContent = 'MP4 MEDIA STREAM';
+            }
+          }
+
+          mediaSelect.addEventListener('change', updateMediaDisplay);
+          updateMediaDisplay(); // Initial load check
         }
 
         // 3. Scroll Progress Bar
